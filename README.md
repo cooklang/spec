@@ -1,5 +1,4 @@
 ### Comments
-✅ 
 ```
 // this is a commentary
 
@@ -9,23 +8,23 @@ add some soup.
 
 ### Ingrediens
 
-✅ In the easiest case just put  `@` symbol before ingredient to mark it:
+In the easiest case just put  `@` symbol before ingredient to mark it:
 ```
 Add @salt and @pepper
 ````
 
-✅ In some cases ingredients can have multiple words. Add `{}` to show where is the end:
+In some cases ingredients can have multiple words. Add `{}` to show where is the end:
 ```
 Add @garlic salt{} and @black pepper{} 
 ```
 
-✅ Most of the time you will need to add amount of ingredients:
+Most of the time you will need to add amount of ingredients:
 ```
 @apple{3} vs default to items
 
 ```
 
-✅ If you need to set units add them with `%`:
+If you need to set units add them with `%`:
 ```
 Add @chiken{1.5%kg} and @salt{pinch}
 ```
@@ -35,7 +34,7 @@ Add @chiken{1.5%kg} and @salt{pinch}
 Add @onion{3%medium}(finely chopped) and fry in @olive oil{2%tbsp}
 ```
 
-✅ It understands fractions too:
+It understands fractions too:
 
 ```
 Add @vanilla syrope{1/4%tsp}
@@ -98,7 +97,7 @@ per serving? total?
 
 ### Equipment
 
-✅ If you like to link equipment used use `#`
+If you like to link equipment used use `#`
 
 ```
 Fry on a #pan or #ironed thing{}
@@ -106,8 +105,6 @@ Fry on a #pan or #ironed thing{}
 
 
 ### Timer
-
-✅
 
 ```
 Put everything in a dish and place into oven for ~{40%m}.
