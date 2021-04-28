@@ -1,7 +1,21 @@
+Table of Contents
+=================
+
+* [About Cooklang](#about-cooklang)
+* [The .cook Recipe Specification](#the-cook-recipe-specification)
+   * [Ingredients](#ingredients)
+   * [Comments](#comments)
+   * [Metadata](#metadata)
+      * [Servings](#servings)
+   * [Cookware](#cookware)
+   * [Timer](#timer)
+* [Adding Pictures](#adding-pictures)
+* [The Shopping List Specification](#the-shopping-list-specification)
+
 ## About Cooklang
 Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata. 
 
-## Recipe Specification
+## The .cook Recipe Specification
 Below is the specification for defining a recipe in cooklang. 
 
 ### Ingredients
@@ -73,23 +87,34 @@ Add @salt{1|1|1%tsp} // as this
 ```
 
 ### Cookware
-You can define any necessary cookware with `#`.
+You can define any necessary cookware with `#`. Like ingredients, you don't need to use braces if it's a single word.
 ```
-Place the potatoes into a #large pot{}.
+Place the potatoes into a #pot.
 Mash the potatoes with a #potato masher{}.
 ```
 
 ### Timer
 You can define a timer using `~`.
 ```
-Lay the potatoes on a #baking sheet{} and place into the #oven{}. Bake for ~{25%m}.
+Lay the potatoes on a #baking sheet{} and place into the #oven{}. Bake for ~{25%minutes}. 
 ```
 
-TODO need to define conversion with config?
+## Adding Pictures
+You can add images to your recipe by including a supported image file (`.png`,`.jpg`) matching the name of the recipe recipe in the same directory.
+```
+Baked Potato.cook
+Baked Potato.jpg
+```
+You can also add images for specific steps by including a step number before the file extension.
+```
+Chicken French.cook
+Chicken French.0.jpg
+Chicken French.3.jpg
+```
 
-### Aisle config file
-
-Use this format. Parser understands plural and singular and merge. You can separate synonyms with `|` (TODO)
+## The Shopping List Specification
+The shopping list parser can use a configuration file and group items for a shopping list by category.
+The parser understands both plural and singular forms. You can separate synonyms with `|`.
 ```
  
 [fruit and veg]
@@ -110,6 +135,7 @@ butter
   
 [meat and seafood]
 chicken
+tuna|chicken of the sea
 
 [breads and baked goods]  
 
@@ -130,35 +156,3 @@ olive oil
 white vinegar
 white wine
 ```
-
-
-### Othere locale support
-TODO
-
-### Pics
-
-To add a recipe picture add image file (png, jpg) alongside with the same name as your cook file.
-
-```
-Chicken French.cook
-Chicken French.jpg
-```
-
-To add a step picture add image file with the same name as you cook file with index of step starting from 0:
-
-```
-Chicken French.cook
-Chicken French.0.jpg
-Chicken French.3.jpg
-```
-
-If not added default patterns will be shown.
-
-### Nutrition values
-
-You can specify nutrition values for you dish. This way when creating a meal plan cook can show balance
-
-
-### Best practices
-
-You can follow [[Cook/Best Practices]] to make less efortless.
