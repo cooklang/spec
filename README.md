@@ -113,46 +113,39 @@ Chicken French.3.jpg
 ```
 
 ## The Shopping List Specification
-The shopping list parser can use a configuration file and group items for a shopping list by category.
-The parser understands both plural and singular forms. You can separate synonyms with `|`.
+To support the creation of shopping lists by apps and the command line tool, cooklang includes a specification for a configuration file to define how ingredients should be grouped on the final shopping list.
+You can use `[]` to define a category name. These names are arbitrary, so you can customize them to meet your needs. For example, each category could be an aisle or section of the store, such as `[produce]` and `[deli]`. 
 ```
- 
-[fruit and veg]
-carrots
-celery
-dill
-garlic
-beetroots
+[produce]
 potatoes
-mushrooms
-onion
-bell pepper
 
-
-[milk and dairy]
+[dairy]
+milk
+butter
+```
+Or, you might be going to multiple stores, in which case you might use `[Tesco]` and `[Costco]`.
+```
+[Costco]
+potatoes
+milk
 butter
 
-  
-[meat and seafood]
+[Tesco]
+bread
+salt
+```
+You can also define synonyms with `|`.
+```
+[produce]
+potatoes
+
+[dairy]
+milk
+butter
+
+[deli]
 chicken
+
+[canned goods]
 tuna|chicken of the sea
-
-[breads and baked goods]  
-
-[tinned goods and baking]
-cannelini beans
-
-[packaged goods, pasta and sauces]
-tomato paste
-
-[dried herbs and spices]
-bay leaves
-black pepper|ground pepper
-cayenne pepper
-salt|sea salt
-
-[oils and dressings]
-olive oil
-white vinegar
-white wine
 ```
