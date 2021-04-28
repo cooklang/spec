@@ -1,113 +1,88 @@
+## About Cooklang
+Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata. 
+
+## Recipe Specification
+Below is the specification for defining a recipe in cooklang. 
+
+### Ingredients
+
+To define an ingredient, use the `@` symbol. If the ingredient's name contains multiple words, indicate the end of the name with `{}`.
+
+```
+Then add @salt and @ground black pepper{} to taste.
+```
+
+To indicate the quantity of an item, place the quantity inside `{}` after the name.
+
+```
+Poke holes in @potato{2}.
+```
+
+To use a unit of an item, such as weight or volume, add a `%` between the quantity and unit.
+
+```
+Place @bacon strips{1%kg} on a baking sheet and glaze with @syrup{1/2%tbsp}.
+```
+
+To modify the ingredient any other way, use parentheses.
+```
+Top with @green onions{1%tbsp}(finely chopped)
+```
+
 ### Comments
+You can add comments to cooklang text with `//`. 
 ```
-// this is a commentary
+// Don't burn the roux!
 
-Prepare bla-bla-bla // this will be ommited 
-add some soup.
-```
-
-### Ingrediens
-
-In the easiest case just put  `@` symbol before ingredient to mark it:
-```
-Add @salt and @pepper
-````
-
-In some cases ingredients can have multiple words. Add `{}` to show where is the end:
-```
-Add @garlic salt{} and @black pepper{} 
-```
-
-Most of the time you will need to add amount of ingredients:
-```
-@apple{3} vs default to items
-
-```
-
-If you need to set units add them with `%`:
-```
-Add @chiken{1.5%kg} and @salt{pinch}
-```
-
-~~If you need to add some modifier add that in parenthesis:~~
-```
-Add @onion{3%medium}(finely chopped) and fry in @olive oil{2%tbsp}
-```
-
-It understands fractions too:
-
-```
-Add @vanilla syrope{1/4%tsp}
+Mash @potato{2%kg} until smooth // alternatively, boil 'em first, then mash 'em, then stick 'em in a stew.
+Slowly add @milk{4%cup}, keep mixing
 ```
 
 ### Metadata
-
-In any place of your recipe you can add metadata in `key: value` fashion:
-
+You can add metadata tags to your recipe for information such as source (or author), meal, total prep time, and number of people served.
 ```
->> course: breakfast
->> time required: 3 hours
-```
-
-
-
-### Servings
-To add servings first add metadata listing how many servings the recipe accomodates
-```
->> servings: 2|4|5
+>> source: https://www.gimmesomeoven.com/baked-potato/
+>> time required: 1.5 hours
+>> course: dinner
 ```
 
-Then in you description specify amount for each serving:
-
+#### Servings
+You can manually add information for scaling serving size up or down. Serving size information comes in two parts: the metadata tag, and ingredient tags. 
+The metadata tag defines the serving sizes the recipe supports.
 ```
-Add @potatoes{3|5|7%medium} 
-```
-
-Or to specify proportionally use `*`:
-
-```
-Add @potatoes{3*%medium}
-
-// is the same as
-
-Add @potatoes{3|6|7.5%medium}
-
+>> servings: 2|4|8
 ```
 
-If nothing specified the same value will be used for all servings:
-
+Then, you can automatically scale ingredient quantities with `*`. This will multiply the quantity given by the number of servings selected.
 ```
-Add @salt{1%tsp}
-
-// is the same as
-
-Add @salt{1|1|1%tsp}
-
+>> servings: 2|4|8
+Add @milk{1/2*%cup} and mix until smooth.
 ```
-
-First serving is default one and will be used when adding in bulk
-
-### Nutrition
-per serving? total?
+Alternatively, you can manually specify ingredient quantities for each serving size. This is useful for non-linear scaling.
 ```
->> nutrition.energy: 550 kcal
->> nutrition.carbonates: 12
+>> servings: 2|4|8
+Add @milk{1|2|3%cup} and mix until smooth. 
 ```
 
-
-### Equipment
-
-If you like to link equipment used use `#`
+If no ingredient scaling is defined, the same quantity will be used for all serving sizes.
 
 ```
-Fry on a #pan or #ironed thing{}
+>> servings: 2|4|8
+Add @salt{1%tsp} // this is the same
+Add @salt{1|1|1%tsp} // as this
 ```
 
+### Cookware
+You can define any necessary cookware with `#`.
+```
+Place the potatoes into a #large pot{}.
+Mash the potatoes with a #potato masher{}.
+```
 
 ### Timer
-
+You can define a timer using `~`.
 ```
-Put everything in a dish and place into oven for ~{40%m}.
+Lay the potatoes on a #baking sheet{} and place into the #oven{}. Bake for ~{25%m}.
 ```
 
 TODO need to define conversion with config?
