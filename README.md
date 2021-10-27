@@ -38,13 +38,8 @@ To use a unit of an item, such as weight or volume, add a `%` between the quanti
 Place @bacon strips{1%kg} on a baking sheet and glaze with @syrup{1/2%tbsp}.
 ```
 
-To modify the ingredient any other way, use parentheses.
-```
-Top with @green onions{1%tbsp}(finely chopped)
-```
-
 ### Comments
-You can add comments to cooklang text with `//`. 
+You can add comments to CookLang text with `//`.
 ```
 // Don't burn the roux!
 
@@ -60,32 +55,6 @@ You can add metadata tags to your recipe for information such as source (or auth
 >> course: dinner
 ```
 
-#### Servings
-You can manually add information for scaling serving size up or down. Serving size information comes in two parts: the metadata tag, and ingredient tags. 
-The metadata tag defines the serving sizes the recipe supports.
-```
->> servings: 2|4|8
-```
-
-Then, you can automatically scale ingredient quantities with `*`. This will multiply the quantity given by the number of servings selected.
-```
->> servings: 2|4|8
-Add @milk{1/2*%cup} and mix until smooth.
-```
-Alternatively, you can manually specify ingredient quantities for each serving size. This is useful for non-linear scaling.
-```
->> servings: 2|4|8
-Add @milk{1|2|3%cup} and mix until smooth. 
-```
-
-If no ingredient scaling is defined, the same quantity will be used for all serving sizes.
-
-```
->> servings: 2|4|8
-Add @salt{1%tsp} // this is the same
-Add @salt{1|1|1%tsp} // as this
-```
-
 ### Cookware
 You can define any necessary cookware with `#`. Like ingredients, you don't need to use braces if it's a single word.
 ```
@@ -96,7 +65,7 @@ Mash the potatoes with a #potato masher{}.
 ### Timer
 You can define a timer using `~`.
 ```
-Lay the potatoes on a #baking sheet{} and place into the #oven{}. Bake for ~{25%minutes}. 
+Lay the potatoes on a #baking sheet{} and place into the #oven{}. Bake for ~{25%minutes}.
 ```
 
 ## Adding Pictures
@@ -113,8 +82,8 @@ Chicken French.3.jpg
 ```
 
 ## The Shopping List Specification
-To support the creation of shopping lists by apps and the command line tool, cooklang includes a specification for a configuration file to define how ingredients should be grouped on the final shopping list.
-You can use `[]` to define a category name. These names are arbitrary, so you can customize them to meet your needs. For example, each category could be an aisle or section of the store, such as `[produce]` and `[deli]`. 
+To support the creation of shopping lists by apps and the command line tool, CookLang includes a specification for a configuration file to define how ingredients should be grouped on the final shopping list.
+You can use `[]` to define a category name. These names are arbitrary, so you can customize them to meet your needs. For example, each category could be an aisle or section of the store, such as `[produce]` and `[deli]`.
 ```
 [produce]
 potatoes
@@ -148,4 +117,32 @@ chicken
 
 [canned goods]
 tuna|chicken of the sea
+```
+
+## Roadmap
+
+### Servings (proposal)
+You can manually add information for scaling serving size up or down. Serving size information comes in two parts: the metadata tag, and ingredient tags.
+The metadata tag defines the serving sizes the recipe supports.
+```
+>> servings: 2|4|8
+```
+
+Then, you can automatically scale ingredient quantities with `*`. This will multiply the quantity given by the number of servings selected.
+```
+>> servings: 2|4|8
+Add @milk{1/2*%cup} and mix until smooth.
+```
+Alternatively, you can manually specify ingredient quantities for each serving size. This is useful for non-linear scaling.
+```
+>> servings: 2|4|8
+Add @milk{1|2|3%cup} and mix until smooth.
+```
+
+If no ingredient scaling is defined, the same quantity will be used for all serving sizes.
+
+```
+>> servings: 2|4|8
+Add @salt{1%tsp} // this is the same
+Add @salt{1|1|1%tsp} // as this
 ```
