@@ -6,11 +6,11 @@ Table of Contents
    * [Ingredients](#ingredients)
    * [Comments](#comments)
    * [Metadata](#metadata)
-      * [Servings](#servings)
    * [Cookware](#cookware)
    * [Timer](#timer)
 * [Adding Pictures](#adding-pictures)
 * [The Shopping List Specification](#the-shopping-list-specification)
+* [Roadmap](#roadmap)
 
 ## About Cooklang
 Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata. 
