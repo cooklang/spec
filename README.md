@@ -157,7 +157,7 @@ Add @salt{1%tsp} // this is the same
 Add @salt{1|1|1%tsp} // as this
 ```
 
-## Parser Imlementation
+## Parser Implementation
 
 * [Swift](https://github.com/cooklang/CookInSwift)
 * [Rust](https://github.com/umgefahren/cook-with-rust) WIP
