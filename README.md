@@ -12,6 +12,8 @@ Table of Contents
 * [Conventions](#conventions)
    * [Adding Pictures](#adding-pictures)
 * [Roadmap](#roadmap)
+* [Parser Imlementation](#parser-implementation)
+* [Syntax Highlighting](#syntax-highlighting)
 
 ## About Cooklang
 Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata. 
@@ -154,3 +156,15 @@ If no ingredient scaling is defined, the same quantity will be used for all serv
 Add @salt{1%tsp} // this is the same
 Add @salt{1|1|1%tsp} // as this
 ```
+
+## Parser Imlementation
+
+* [Swift](https://github.com/cooklang/CookInSwift)
+* [Rust](https://github.com/umgefahren/cook-with-rust) WIP
+
+## Syntax Highlighting
+
+* [Emacs](https://github.com/cooklang/cook-mode)
+* [SublimeText](https://github.com/cooklang/CookSublime)
+* [Vim](https://github.com/luizribeiro/vim-cooklang)
+* [VSCode](https://github.com/cooklang/CookVSCode)
