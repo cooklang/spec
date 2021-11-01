@@ -4,7 +4,6 @@ Table of Contents
 * [About Cooklang](#about-cooklang)
 * [The .cook Recipe Specification](#the-cook-recipe-specification)
    * [Ingredients](#ingredients)
-   * [Comments](#comments)
    * [Metadata](#metadata)
    * [Cookware](#cookware)
    * [Timer](#timer)
@@ -39,15 +38,6 @@ To use a unit of an item, such as weight or volume, add a `%` between the quanti
 
 ```
 Place @bacon strips{1%kg} on a baking sheet and glaze with @syrup{1/2%tbsp}.
-```
-
-### Comments
-You can add comments to CookLang text with `//`.
-```
-// Don't burn the roux!
-
-Mash @potato{2%kg} until smooth // alternatively, boil 'em first, then mash 'em, then stick 'em in a stew.
-Slowly add @milk{4%cup}, keep mixing
 ```
 
 ### Metadata
