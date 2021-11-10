@@ -2,36 +2,36 @@
 # CookLang EBNF description
 
 ```ebnf
-recipe = { comments | metadata | step } ;
+recipe = { metadata | step } ;
 
-(* comments will be changed soon to '--' *)
-comments = "/", "/", { all characters } ;
-metadata = "^", ">", ">", multiword, ":", { white space }, text_item | number| amount, "\n" ;
-step     = "^", { text_item | ingredient | cookware | timer }, "\n" ;
+(* not sure how to show that, but two below should start from a new line *)
+metadata = ">", ">", multiword, ":", { white space }, text item | number| amount, new line character ;
+step     = { text item | ingredient | cookware | timer }, new line character ;
 
 
-ingredient           = one_word_ingredient | multiword_ingredient ;
-one_word_ingredient  = "@", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ]) ;
-multiword_ingredient = "@", ( word, multiword, "{", { white space }, [ amount ], { white space }, "}" ) ;
+ingredient           = one word ingredient | multiword ingredient ;
+one word ingredient  = "@", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ]) ;
+multiword ingredient = "@", ( word, multiword, "{", { white space }, [ amount ], { white space }, "}" ) ;
 
-cookware             = one_word_cookware | multiword_cookware ;
-one_word_cookware    = "#", ( word,          [ "{", { white space }, [ quantity ], { white space }, "}" ]) ;
-multiword_cookware   = "#", ( word, multiword, "{", { white space }, [ quantity ], { white space }, "}" ) ;
+cookware             = one word cookware | multiword cookware ;
+one word cookware    = "#", ( word,          [ "{", { white space }, [ quantity ], { white space }, "}" ]) ;
+multiword cookware   = "#", ( word, multiword, "{", { white space }, [ quantity ], { white space }, "}" ) ;
 
-timer                = no_name_timer | one_word_timer | multiword_timer ;
-no_name_timer        = "~", (                  "{", { white space }, [ amount ], { white space }, "}" ) ;
-one_word_timer       = "~", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ]) ;
-multiword_timer      = "~", ( word, multiword, "{", { white space }, [ amount ], { white space }, "}" ) ;
+timer                = no name timer | one word timer | multiword timer ;
+no name timer        = "~", (                  "{", { white space }, [ amount ], { white space }, "}" ) ;
+one word timer       = "~", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ]) ;
+multiword timer      = "~", ( word, multiword, "{", { white space }, [ amount ], { white space }, "}" ) ;
 
 (* '%' separator will be changed soon to '*' *)
 amount   = quantity | ( quantity, { white space }, "%", { white space }, units );
 quantity = number | multiword ;
-units    = multiword ;
+units    = multiword | punctuation character;
 
 
 multiword = { word | white space } ;
-word      = { alphabetic character | digit } ;
-text_item = { all characters }
+(* yay, emoji! *)
+word      = { alphabetic character | digit | symbol character - cooklang ancillary character } ;
+text item = { alphabetic character | digit | symbol character | punctuation character | white space }
 
 number         = integer | fractional | decimal ;
 fractional     = integer, { white space }, "/", { white space }, integer ;
@@ -41,16 +41,14 @@ digit          = zero | non-zero digit ;
 non-zero digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 zero           = "0" ;
 
+cooklang ancillary character = (* from symbols set *) ">" | "|" | "~" | (* from punctuation set *)  "@" | "#" | ":" | "{" | "}" | "%" ;
+(* https://en.wikipedia.org/wiki/Template:General_Category_(Unicode) *)
+alphabetic character = ? Unicode General Categories L* and M* ?;
+white space = ? Unicode General Category Zs and CHARACTER TABULATION (U+0009) ? ;
+new line character = ? newline characters (U+000A ~ U+000D, U+0085, U+2028, and U+2029) ? ;
+punctuation character = ? Unicode General Category P* ? ;
+symbol character = ? Unicode General Category S* ? ;
 
-alphabetic character = "A" | "B" | "C" | "D" | "E" | "F" | "G"
-                     | "H" | "I" | "J" | "K" | "L" | "M" | "N"
-                     | "O" | "P" | "Q" | "R" | "S" | "T" | "U"
-                     | "V" | "W" | "X" | "Y" | "Z"
-                     | "a" | "b" | "c" | "d" | "e" | "f" | "g"
-                     | "h" | "i" | "j" | "k" | "l" | "m" | "n"
-                     | "o" | "p" | "q" | "r" | "s" | "t" | "u"
-                     | "v" | "w" | "x" | "y" | "z" ;
-(* special characters = ">" | "@" | "#" | "~" | ":" | "{" | "}" | "%" ; *)
-white space = ? white space characters ? ;
-all characters = ? all visible characters ? ;
+(* comments will be changed to '--' soon, block comments to be added *)
+comments = "/", "/", ? any character ? ;
 ```

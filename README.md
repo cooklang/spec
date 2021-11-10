@@ -16,7 +16,7 @@ Table of Contents
 * [Syntax Highlighting](#syntax-highlighting)
 
 ## About Cooklang
-Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata. 
+Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata. Formal description of the language can be found [here](EBNF.md).
 
 ## The .cook Recipe Specification
 Below is the specification for defining a recipe in cooklang. 
