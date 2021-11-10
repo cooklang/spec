@@ -10,16 +10,16 @@ step     = { text item | ingredient | cookware | timer }, new line character ;
 
 
 ingredient           = one word ingredient | multiword ingredient ;
-one word ingredient  = "@", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ]) ;
+one word ingredient  = "@", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ] ) ;
 multiword ingredient = "@", ( word, multiword, "{", { white space }, [ amount ], { white space }, "}" ) ;
 
 cookware             = one word cookware | multiword cookware ;
-one word cookware    = "#", ( word,          [ "{", { white space }, [ quantity ], { white space }, "}" ]) ;
+one word cookware    = "#", ( word,          [ "{", { white space }, [ quantity ], { white space }, "}" ] ) ;
 multiword cookware   = "#", ( word, multiword, "{", { white space }, [ quantity ], { white space }, "}" ) ;
 
 timer                = no name timer | one word timer | multiword timer ;
 no name timer        = "~", (                  "{", { white space }, [ amount ], { white space }, "}" ) ;
-one word timer       = "~", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ]) ;
+one word timer       = "~", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ] ) ;
 multiword timer      = "~", ( word, multiword, "{", { white space }, [ amount ], { white space }, "}" ) ;
 
 (* '%' separator will be changed soon to '*' *)
