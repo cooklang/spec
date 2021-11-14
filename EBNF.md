@@ -6,7 +6,7 @@ recipe = { metadata | step } ;
 
 (* not sure how to show that, but two below should start from a new line *)
 metadata = ">", ">", multiword, ":", { white space }, text item | number| amount, new line character ;
-step     = { text item | ingredient | cookware | timer }, new line character ;
+step     = { text item | ingredient | cookware | timer }-, new line character ;
 
 
 ingredient           = one word ingredient | multiword ingredient ;
@@ -28,10 +28,10 @@ quantity = number | multiword ;
 units    = multiword | punctuation character;
 
 
-multiword = { word | white space } ;
+multiword = { word | white space }- ;
 (* yay, emoji! *)
-word      = { alphabetic character | digit | symbol character - cooklang ancillary character } ;
-text item = { alphabetic character | digit | symbol character | punctuation character | white space }
+word      = { alphabetic character | digit | symbol character - cooklang ancillary character }- ;
+text item = { alphabetic character | digit | symbol character | punctuation character | white space }- ;
 
 number         = integer | fractional | decimal ;
 fractional     = integer, { white space }, "/", { white space }, integer ;
