@@ -16,7 +16,9 @@ Table of Contents
 * [Syntax Highlighting](#syntax-highlighting)
 
 ## About Cooklang
-Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata. Formal description of the language can be found [here](EBNF.md).
+Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata.
+
+More formal description of the language can be found [here](https://github.com/cooklang/spec/blob/main/EBNF.md).
 
 ## The .cook Recipe Specification
 Below is the specification for defining a recipe in cooklang. 
@@ -42,12 +44,16 @@ Place @bacon strips{1%kg} on a baking sheet and glaze with @syrup{1/2%tbsp}.
 ```
 
 ### Comments
-You can add comments to CookLang text with `//`.
+You can add comments up to the end of the line to CookLang text with `--`.
 ```
-// Don't burn the roux!
+-- Don't burn the roux!
 
-Mash @potato{2%kg} until smooth // alternatively, boil 'em first, then mash 'em, then stick 'em in a stew.
-Slowly add @milk{4%cup}, keep mixing
+Mash @potato{2%kg} until smooth -- alternatively, boil 'em first, then mash 'em, then stick 'em in a stew.
+```
+
+Or block comments with `[- comment text -]`.
+```
+Slowly add @milk{4%cup} [- TODO change units to litres -], keep mixing
 ```
 
 ### Metadata
@@ -153,8 +159,8 @@ If no ingredient scaling is defined, the same quantity will be used for all serv
 
 ```
 >> servings: 2|4|8
-Add @salt{1%tsp} // this is the same
-Add @salt{1|1|1%tsp} // as this
+Add @salt{1%tsp} -- this is the same
+Add @salt{1|1|1%tsp} -- as this
 ```
 
 ## Parser Implementation
