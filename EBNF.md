@@ -49,6 +49,6 @@ new line character = ? newline characters (U+000A ~ U+000D, U+0085, U+2028, and 
 punctuation character = ? Unicode General Category P* ? ;
 symbol character = ? Unicode General Category S* ? ;
 
-(* comments will be changed to '--' soon, block comments to be added *)
-comments = "/", "/", ? any character ? ;
+comments = "-", "-", ? any character ?, new line character ;
+block comments = "[", "-", ? any character ?, "-", "]" ;
 ```
