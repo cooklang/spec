@@ -77,6 +77,14 @@ You can define a timer using `~`.
 Lay the potatoes on a #baking sheet{} and place into the #oven{}. Bake for ~{25%minutes}.
 ```
 
+Timers can have a name too:
+
+```
+Boil @eggs{2} for ~eggs{3%minutes}.
+```
+
+Applications can use this name in notifications.
+
 ## The Shopping List Specification
 To support the creation of shopping lists by apps and the command line tool, Cooklang includes a specification for a configuration file to define how ingredients should be grouped on the final shopping list.
 You can use `[]` to define a category name. These names are arbitrary, so you can customize them to meet your needs. For example, each category could be an aisle or section of the store, such as `[produce]` and `[deli]`.
