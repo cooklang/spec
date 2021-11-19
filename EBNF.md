@@ -1,5 +1,5 @@
 
-# CookLang EBNF description
+# Cooklang EBNF description
 
 ```ebnf
 recipe = { metadata | step } ;
