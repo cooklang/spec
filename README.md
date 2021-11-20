@@ -176,6 +176,7 @@ Add @salt{1|1|1%tsp} -- as this
 * [Swift](https://github.com/cooklang/CookInSwift)
 * [Rust](https://github.com/umgefahren/cook-with-rust) WIP
 * [.NET](https://github.com/heytherewill/cooklangnet)
+* [Go](https://github.com/aquilax/cooklang-go)
 
 ## Syntax Highlighting
 
