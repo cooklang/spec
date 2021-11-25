@@ -174,6 +174,7 @@ Add @salt{1|1|1%tsp} -- as this
 ## Parser Implementation
 
 * [Swift](https://github.com/cooklang/CookInSwift)
+* [C](https://github.com/cooklang/cook-in-c) WIP
 * [Rust](https://github.com/umgefahren/cook-with-rust) WIP
 * [.NET](https://github.com/heytherewill/cooklangnet)
 * [Go](https://github.com/aquilax/cooklang-go)
