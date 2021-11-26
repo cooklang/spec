@@ -1,0 +1,565 @@
+version: 1
+tests:
+  testBasicDirection:
+    source: |
+      Add a bit of chilli
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add a bit of chilli"
+      metadata: []
+
+
+  testComments:
+    source: |
+      -- testing comments
+    result:
+      steps: []
+      metadata: []
+
+
+  testCommentsAfterIngredients:
+    source: |
+      @thyme{2%springs} -- testing comments
+      and some text
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "thyme"
+            quantity: 2
+            units: "springs"
+          - type: text
+            value: " "
+        -
+          - type: text
+            value: "and some text"
+      metadata: []
+
+
+  testCommentsWithIngredients:
+    source: |
+      -- testing comments
+      @thyme{2%springs}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "thyme"
+            quantity: 2
+            units: "springs"
+      metadata: []
+
+
+  testDirectionsWithDegrees:
+    source: |
+      Heat oven up to 200°C
+    result:
+      steps:
+        -
+          - type: text
+            value: "Heat oven up to 200°C"
+      metadata: []
+
+
+  testDirectionsWithNumbers:
+    source: |
+      Heat 5L of water
+    result:
+      steps:
+        -
+          - type: text
+            value: "Heat 5L of water"
+      metadata: []
+
+
+  testDirectionWithIngrident:
+    source: |
+      Add @chilli{3%items}, @ginger{10%g} and @milk{1%l}.
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add "
+          - type: ingredient
+            name: "chilli"
+            quantity: 3
+            units: "items"
+          - type: text
+            value: ", "
+          - type: ingredient
+            name: "ginger"
+            quantity: 10
+            units: "g"
+          - type: text
+            value: " and "
+          - type: ingredient
+            name: "milk"
+            quantity: 1
+            units: "l"
+          - type: text
+            value: "."
+      metadata: []
+
+
+  testEquipmentMultipleWords:
+    source: |
+      Fry in #frying pan{}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Fry in "
+          - type: cookware
+            name: "frying pan"
+            quantity: ""
+      metadata: []
+
+
+  testEquipmentMultipleWordsWithLeadingNumber:
+    source: |
+      Fry in #7-inch nonstick frying pan{ }
+    result:
+      steps:
+        -
+          - type: text
+            value: "Fry in "
+          - type: cookware
+            name: "7-inch nonstick frying pan"
+            quantity: ""
+      metadata: []
+
+
+  testEquipmentMultipleWordsWithSpaces:
+    source: |
+      Fry in #frying pan{ }
+    result:
+      steps:
+        -
+          - type: text
+            value: "Fry in "
+          - type: cookware
+            name: "frying pan"
+            quantity: ""
+      metadata: []
+
+
+  testEquipmentOneWord:
+    source: |
+      Simmer in #pan for some time
+    result:
+      steps:
+        -
+          - type: text
+            value: "Simmer in "
+          - type: cookware
+            name: "pan"
+            quantity: ""
+          - type: text
+            value: " for some time"
+      metadata: []
+
+
+  testFractions:
+    source: |
+      @milk{1/2%cup}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "milk"
+            quantity: 0.5
+            units: "cup"
+      metadata: []
+
+
+  testFractionsInDirections:
+    source: |
+      knife cut about every 1/2 inches
+    result:
+      steps:
+        -
+          - type: text
+            value: "knife cut about every 1/2 inches"
+      metadata: []
+
+
+  testFractionsLike:
+    source: |
+      @milk{01/2%cup}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "milk"
+            quantity: 01/2
+            units: "cup"
+      metadata: []
+
+
+  testFractionsWithSpaces:
+    source: |
+      @milk{1 / 2 %cup}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "milk"
+            quantity: 0.5
+            units: "cup"
+      metadata: []
+
+
+  testIngredientMultipleWordsWithLeadingNumber:
+    source: |
+      Top with @1000 island dressing{ }
+    result:
+      steps:
+        -
+          - type: text
+            value: "Top with "
+          - type: ingredient
+            name: "1000 island dressing"
+            quantity: 1
+            units: ""
+      metadata: []
+
+
+  testIngredientWithEmoji:
+    source: |
+      Add some @🧂
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add some "
+          - type: ingredient
+            name: "🧂"
+            quantity: 1
+            units: ""
+      metadata: []
+
+
+  testIngridentExplicitUnits:
+    source: |
+      @chilli{3%items}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "chilli"
+            quantity: 3
+            units: "items"
+      metadata: []
+
+
+  testIngridentExplicitUnitsWithSpaces:
+    source: |
+      @chilli{ 3 % items }
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "chilli"
+            quantity: 3
+            units: "items"
+      metadata: []
+
+
+  testIngridentImplicitQuantity:
+    source: |
+      @chilli{%items}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "chilli"
+            quantity: 1
+            units: "items"
+      metadata: []
+
+
+  testIngridentImplicitUnits:
+    source: |
+      @chilli{3}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "chilli"
+            quantity: 3
+            units: ""
+      metadata: []
+
+
+  testIngridentNoUnits:
+    source: |
+      @chilli
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "chilli"
+            quantity: 1
+            units: ""
+      metadata: []
+
+
+  testIngridentNoUnitsNotOnlyString:
+    source: |
+      @5peppers
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "5peppers"
+            quantity: 1
+            units: ""
+      metadata: []
+
+
+  testIngridentWithNumbers:
+    source: |
+      @tipo 00 flour{250%g}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "tipo 00 flour"
+            quantity: 250
+            units: "g"
+      metadata: []
+
+
+  testIngridentWithoutStopper:
+    source: |
+      @chilli cut into pieces
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "chilli"
+            quantity: 1
+            units: ""
+          - type: text
+            value: " cut into pieces"
+      metadata: []
+
+
+  testMetadata:
+    source: |
+      >> sourced: babooshka
+    result:
+      steps: []
+      metadata:
+        "sourced": babooshka
+
+
+  testMetadataBreak:
+    source: |
+      hello >> sourced: babooshka
+    result:
+      steps:
+        -
+          - type: text
+            value: "hello >> sourced: babooshka"
+      metadata: []
+
+
+  testMetadataMultiwordKey:
+    source: |
+      >> cooking time: 30 mins
+    result:
+      steps: []
+      metadata:
+        "cooking time": 30 mins
+
+
+  testMetadataMultiwordKeyWithSpaces:
+    source: |
+      >>cooking time    :30 mins
+    result:
+      steps: []
+      metadata:
+        "cooking time": 30 mins
+
+
+  testMultiLineDirections:
+    source: |
+      Add a bit of chilli
+
+      Add a bit of hummus
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add a bit of chilli"
+        -
+          - type: text
+            value: "Add a bit of hummus"
+      metadata: []
+
+
+  testMultipleLines:
+    source: |
+      >> Prep Time: 15 minutes
+      >> Cook Time: 30 minutes
+    result:
+      steps: []
+      metadata:
+        "Prep Time": 15 minutes
+        "Cook Time": 30 minutes
+
+
+  testMultiWordIngrident:
+    source: |
+      @hot chilli{3}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "hot chilli"
+            quantity: 3
+            units: ""
+      metadata: []
+
+
+  testMultiWordIngridentNoAmount:
+    source: |
+      @hot chilli{}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "hot chilli"
+            quantity: 1
+            units: ""
+      metadata: []
+
+
+  testMutipleIngridentsWithoutStopper:
+    source: |
+      @chilli cut into pieces and @garlic
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "chilli"
+            quantity: 1
+            units: ""
+          - type: text
+            value: " cut into pieces and "
+          - type: ingredient
+            name: "garlic"
+            quantity: 1
+            units: ""
+      metadata: []
+
+
+  testQuantityAsText:
+    source: |
+      @thyme{few%springs}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "thyme"
+            quantity: few
+            units: "springs"
+      metadata: []
+
+
+  testQuantityDigitalString:
+    source: |
+      @water{7 k }
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "water"
+            quantity: 7 k
+            units: ""
+      metadata: []
+
+
+  testServings:
+    source: |
+      >> servings: 1|2|3
+    result:
+      steps: []
+      metadata:
+        "servings": 1|2|3
+
+
+  testSlashInText:
+    source: |
+      Preheat the oven to 200℃/Fan 180°C.
+    result:
+      steps:
+        -
+          - type: text
+            value: "Preheat the oven to 200℃/Fan 180°C."
+      metadata: []
+
+
+  testTimerDecimal:
+    source: |
+      Fry for ~{1.5%minutes}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Fry for "
+          - type: timer
+            quantity: 1.5
+            units: "minutes"
+            name: ""
+      metadata: []
+
+
+  testTimerFractional:
+    source: |
+      Fry for ~{1/2%hour}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Fry for "
+          - type: timer
+            quantity: 0.5
+            units: "hour"
+            name: ""
+      metadata: []
+
+
+  testTimerInteger:
+    source: |
+      Fry for ~{10%minutes}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Fry for "
+          - type: timer
+            quantity: 10
+            units: "minutes"
+            name: ""
+      metadata: []
+
+
+  testTimerWithName:
+    source: |
+      Fry for ~potato{42%minutes}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Fry for "
+          - type: timer
+            quantity: 42
+            units: "minutes"
+            name: "potato"
+      metadata: []
+
+# TODO add common syntax errors
