@@ -1,4 +1,4 @@
-version: 1
+version: 2
 tests:
   testBasicDirection:
     source: |
@@ -221,7 +221,7 @@ tests:
             value: "Top with "
           - type: ingredient
             name: "1000 island dressing"
-            quantity: 1
+            quantity: "some"
             units: ""
       metadata: []
 
@@ -236,7 +236,7 @@ tests:
             value: "Add some "
           - type: ingredient
             name: "🧂"
-            quantity: 1
+            quantity: "some"
             units: ""
       metadata: []
 
@@ -275,7 +275,7 @@ tests:
         -
           - type: ingredient
             name: "chilli"
-            quantity: 1
+            quantity: ""
             units: "items"
       metadata: []
 
@@ -301,7 +301,7 @@ tests:
         -
           - type: ingredient
             name: "chilli"
-            quantity: 1
+            quantity: "some"
             units: ""
       metadata: []
 
@@ -314,7 +314,7 @@ tests:
         -
           - type: ingredient
             name: "5peppers"
-            quantity: 1
+            quantity: "some"
             units: ""
       metadata: []
 
@@ -340,7 +340,7 @@ tests:
         -
           - type: ingredient
             name: "chilli"
-            quantity: 1
+            quantity: "some"
             units: ""
           - type: text
             value: " cut into pieces"
@@ -433,7 +433,7 @@ tests:
         -
           - type: ingredient
             name: "hot chilli"
-            quantity: 1
+            quantity: "some"
             units: ""
       metadata: []
 
@@ -446,13 +446,13 @@ tests:
         -
           - type: ingredient
             name: "chilli"
-            quantity: 1
+            quantity: "some"
             units: ""
           - type: text
             value: " cut into pieces and "
           - type: ingredient
             name: "garlic"
-            quantity: 1
+            quantity: "some"
             units: ""
       metadata: []
 
@@ -544,6 +544,20 @@ tests:
           - type: timer
             quantity: 10
             units: "minutes"
+            name: ""
+      metadata: []
+
+  testEmptyTimer:
+    source: |
+      Fry for ~{%mins}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Fry for "
+          - type: timer
+            quantity: 0
+            units: "mins"
             name: ""
       metadata: []
 
