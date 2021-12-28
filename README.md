@@ -173,11 +173,19 @@ Add @salt{1|1|1%tsp} -- as this
 
 ## Parser Implementation
 
-* [Swift](https://github.com/cooklang/CookInSwift)
-* [C](https://github.com/cooklang/cook-in-c) WIP
-* [Rust](https://github.com/umgefahren/cook-with-rust) WIP
+Abstract:
+* [Canonical tests](https://github.com/cooklang/spec/tree/main/tests)
+* [Tree-sitter](https://github.com/addcninblue/tree-sitter-cooklang)
+
+Particular languages:
 * [.NET](https://github.com/heytherewill/cooklangnet)
-* [Go](https://github.com/aquilax/cooklang-go)
+* [C](https://github.com/cooklang/cook-in-c) WIP
+* [Clojure](https://github.com/kiranshila/cooklang-clj) 
+* [Go](https://github.com/aquilax/cooklang-go) 
+* [Lua](https://github.com/michal-h21/cooklang-lua)
+* [Python](https://github.com/luizribeiro/py-cooklang)
+* [Rust](https://github.com/umgefahren/cook-with-rust)
+* [Swift](https://github.com/cooklang/CookInSwift)
 
 ## Syntax Highlighting
 
