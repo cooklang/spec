@@ -28,7 +28,7 @@ quantity = number | multiword ;
 units    = multiword | punctuation character;
 
 
-multiword = { word | white space }- ;
+multiword = { word | white space | punctuation character }- ;
 (* yay, emoji! *)
 word      = { alphabetic character | digit | symbol character - cooklang ancillary character }- ;
 text item = { alphabetic character | digit | symbol character | punctuation character | white space }- ;
