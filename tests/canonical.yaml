@@ -1,4 +1,4 @@
-version: 2
+version: 3
 tests:
   testBasicDirection:
     source: |
@@ -263,19 +263,6 @@ tests:
           - type: ingredient
             name: "chilli"
             quantity: 3
-            units: "items"
-      metadata: []
-
-
-  testIngridentImplicitQuantity:
-    source: |
-      @chilli{%items}
-    result:
-      steps:
-        -
-          - type: ingredient
-            name: "chilli"
-            quantity: ""
             units: "items"
       metadata: []
 
