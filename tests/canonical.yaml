@@ -1,4 +1,4 @@
-version: 3
+version: 4
 tests:
   testBasicDirection:
     source: |
@@ -531,20 +531,6 @@ tests:
           - type: timer
             quantity: 10
             units: "minutes"
-            name: ""
-      metadata: []
-
-  testEmptyTimer:
-    source: |
-      Fry for ~{%mins}
-    result:
-      steps:
-        -
-          - type: text
-            value: "Fry for "
-          - type: timer
-            quantity: 0
-            units: "mins"
             name: ""
       metadata: []
 
