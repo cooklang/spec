@@ -25,7 +25,7 @@ multiword timer      = "~", ( word, multiword, "{", { white space }, [ amount ],
 (* '%' separator will be changed soon to '*' *)
 amount   = quantity | ( quantity, { white space }, "%", { white space }, units );
 quantity = number | multiword ;
-units    = multiword | punctuation character;
+units    = multiword ;
 
 
 multiword = { word | white space | punctuation character }- ;
