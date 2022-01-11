@@ -35,7 +35,7 @@ text item = { alphabetic character | digit | symbol character | punctuation char
 
 number         = integer | fractional | decimal ;
 fractional     = integer, { white space }, "/", { white space }, integer ;
-decimal        = integer, ".", integer ;
+decimal        = integer, ".", digit ;
 integer        = zero | ( non-zero digit, { digit } ) ;
 digit          = zero | non-zero digit ;
 non-zero digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
