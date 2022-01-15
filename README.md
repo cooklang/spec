@@ -190,6 +190,7 @@ Particular languages:
 ## Syntax Highlighting
 
 * [Emacs](https://github.com/cooklang/cook-mode)
+* [Nano](https://github.com/le-jun/cooklang.nanorc)
 * [SublimeText](https://github.com/cooklang/CookSublime)
 * [Vim](https://github.com/luizribeiro/vim-cooklang)
 * [VSCode](https://github.com/cooklang/CookVSCode)
