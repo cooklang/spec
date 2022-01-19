@@ -142,6 +142,8 @@ Chicken French.3.jpg
 
 ## Roadmap
 
+[Roadmap](https://github.com/cooklang/spec/blob/main/ROADMAP.md)
+
 ### Servings (proposal)
 You can manually add information for scaling serving size up or down. Serving size information comes in two parts: the metadata tag, and ingredient tags.
 The metadata tag defines the serving sizes the recipe supports.
