@@ -11,14 +11,11 @@ Table of Contents
 * [The Shopping List Specification](#the-shopping-list-specification)
 * [Conventions](#conventions)
    * [Adding Pictures](#adding-pictures)
-* [Roadmap](#roadmap)
-* [Parser Imlementation](#parser-implementation)
+* [Projects Which Use Cooklang](#projects-which-use-cooklang)
 * [Syntax Highlighting](#syntax-highlighting)
 
 ## About Cooklang
 Cooklang is the markup language at the center of an open-source ecosystem for cooking and recipe management. In Cooklang, each text file is a recipe written as plain-english instructions with markup syntax to add machine-parsible information about required ingredients, cookware, time, and metadata.
-
-More formal description of the language can be found [here](https://github.com/cooklang/spec/blob/main/EBNF.md).
 
 ## The .cook Recipe Specification
 Below is the specification for defining a recipe in Cooklang.
@@ -140,26 +137,13 @@ Chicken French.0.jpg
 Chicken French.3.jpg
 ```
 
-## Roadmap
+## Projects Which Use Cooklang
 
-[Roadmap](https://github.com/cooklang/spec/blob/main/ROADMAP.md)
+* [Cooklang playground](https://biowaffeln.github.io/cooklang-parser/)
+* [Obsidian plugin](https://github.com/deathau/cooklang-obsidian)
+* [Official command line application](https://github.com/cooklang/CookCLI)
+* [Official iOS application](https://cooklang.org/app/)
 
-
-## Parser Implementation
-
-Abstract:
-* [Canonical tests](https://github.com/cooklang/spec/tree/main/tests)
-* [Tree-sitter](https://github.com/addcninblue/tree-sitter-cooklang)
-
-Particular languages:
-* [.NET](https://github.com/heytherewill/cooklangnet)
-* [C](https://github.com/cooklang/cook-in-c) WIP
-* [Clojure](https://github.com/kiranshila/cooklang-clj) 
-* [Go](https://github.com/aquilax/cooklang-go) 
-* [Lua](https://github.com/michal-h21/cooklang-lua)
-* [Python](https://github.com/luizribeiro/py-cooklang)
-* [Rust](https://github.com/umgefahren/cook-with-rust)
-* [Swift](https://github.com/cooklang/CookInSwift)
 
 ## Syntax Highlighting
 
