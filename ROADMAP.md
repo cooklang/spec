@@ -2,6 +2,32 @@
 
 ### Internationalization and localization
 
+#### Locale lookup
+
+App should guess locale from the system.
+
+If config has locale set it should use one instead. In file `./config/main.conf` add line `locale = ru_RU`. Or simple `locale = ru`.
+
+Locale of recipe can be set in file name or metadata. Name file `Koldskål.da.cook`. Or in metadata set
+
+```
+>> locale: da_DK
+```
+
+#### Inflection rules for locale
+
+- how to singularise ingredients and convert case to base when parsing
+- how to singularise units and convert case to base when parsing
+- how to pluralise units and ingredients when display with numbers (this can be done by Apple?)
+
+For many languages plural and singular form of an ingredient or unit will be different. To keep recipe readable
+
+https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html
+https://cldr.unicode.org/translation/grammatical-inflection
+Depending on the locale, there could be up to 6 plural forms used: zero, one, two, few, many, other.
+
+
+
 ### Servings
 
 You can manually add information for scaling serving size up or down. Serving size information comes in two parts: the metadata tag, and ingredient tags.
@@ -122,7 +148,46 @@ Add @../Sauces/Guacamole.cook{1/10|1/4|1/2} and mix well.
 * Difficulty
 * Source
 * Title
+* locale
+
+### Ingredients metadata
+
+For each ingredient we can define metadata.
+
+```yaml
+# filename potato.yaml
+conversion:
+  - "50%g = 1%medium"
+  - "0.7%kg = 1%l"
+nutrition:
+ ...
+```
 
 ### Units conversion
 
+For mass/mass, volume/volume I think to use conversion table in this way (example for people from Europe):
+```
+1%l = 1000%ml
+236.6%ml = 1%cup
+1%kg = 1000%g
+```
+The item on the left is "domestic" and parser will prefer it over the right side when makes the plan for converting units. For the US cups will be on the left. The beauty of this approach is that people tune their level of control, because some prefer to have everything measured in grams and some are fine with approximate values. The problem I can't solve with this approach is how to use different "domestic" units in the same time based on value itself and pick one which is more suitable for formatting, for example parser should prefer `400 ml` over `0.4 l`, but not `1.7 cups` 🤔.
+
+For mass/volume and volume/mass there's no other way, but to introduce an ingredient density: conversion rules which applicable only to one ingredient. I though to have a yaml file per ingredient where we store conversion rules (and later also nutrition values):
+
+```yaml
+# filename potato.yaml
+conversion:
+  - "50%g = 1%medium"
+  - "0.7%kg = 1%l"
+nutrition:
+ ...
+```
+Perhaps add some sane default values as well which can be used if nothing like that provided. On the left it should always be mass units and on the right volume.
+
 ### Nutrition values
+
+### Paragraph
+
+Match Markdown paragraph; empty line separates steps, so it's possible to use line end to format file.
+
