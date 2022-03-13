@@ -146,6 +146,7 @@ Add @../Sauces/Guacamole.cook{1/10|1/4|1/2} and mix well.
 * Custom image lookup
 * Tags
 * Difficulty
+* Nutrition facts
 * Source
 * Title
 * locale
