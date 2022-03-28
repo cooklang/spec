@@ -3,30 +3,23 @@
 * Proposal: [0001-support-recipes-not-in-english](0001-support-recipes-not-in-english.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
 * Review Manager: TBD
-* Status: **Awaiting review**
-
-*During the review process, add the following fields as needed:*
-
-* Decision Notes: [Rationale](https://github.com/cooklang/spec/discussions), [Additional Commentary](https://github.com/cooklang/spec/discussions)
-* Previous Revision: [1](https://github.com/cooklang/spec/blob/...commit-ID.../proposals/NNNN-filename.md)
-* Previous Proposal: [XXXX-filename](XXXX-filename.md)
+* Status: **Brainstorming**
 
 ## Introduction
 
-A short description of what the feature is. Try to keep it to a
-single-paragraph "elevator pitch" so the reader understands what
-problem this proposal is addressing.
-
-Discussion thread: [Discussion thread topic for that proposal](https://github.com/cooklang/spec/discussions).
+Cooklang ecosystem should have unified support of recipes written in any language.
 
 ## Motivation
 
-Describe the problems that this proposal seeks to address. If the
-problem is that some common pattern is currently hard to express, show
-how one can currently get a similar effect and describe its
-drawbacks. If it's completely new functionality that cannot be
-emulated, motivate why this new functionality would help Cooklang community
-use Cooklang better.
+Cooklang gives a way to store recipes in a format that human and machine readable.
+Some languages (f.e. German, Finnish, many Slavic languages) would have ingredients
+in the middle of sentence to be in a modified form (check an examples on Wikipedia
+ https://en.wikipedia.org/wiki/Grammatical_case).
+
+That modified form will lead to creation of multiple entries for the same ingredient
+in a shopping list, while it's still the same ingredient and all amounts should be
+combined.
+
 
 ## Proposed solution
 
