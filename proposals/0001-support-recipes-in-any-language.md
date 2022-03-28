@@ -1,7 +1,7 @@
-# Feature name
+# Support recipes in any language
 
-* Proposal: [NNNN-filename](NNNN-filename.md)
-* Authors: [Author 1](https://github.com/cooklangdev), [Author 2](https://github.com/cooklangdev)
+* Proposal: [0001-support-recipes-not-in-english](0001-support-recipes-not-in-english.md)
+* Authors: [Alexey Dubovskoy](https://github.com/dubadub)
 * Review Manager: TBD
 * Status: **Awaiting review**
 
@@ -30,9 +30,24 @@ use Cooklang better.
 
 ## Proposed solution
 
-Describe your solution to the problem. Provide examples and describe
-how they work. Show how your solution is better than current
-workarounds (if any).
+If config has locale set it should use one instead. In file `./config/main.conf` add line `locale = ru_RU`. Or simple `locale = ru`.
+
+Locale of recipe can be set in file name or metadata. Name file `Koldskål.da.cook`. Or in metadata set
+
+```
+>> locale: da_DK
+```
+
+- how to singularise ingredients and convert case to base when parsing
+- how to singularise units and convert case to base when parsing
+- how to pluralise units and ingredients when display with numbers (this can be done by Apple?)
+
+For many languages plural and singular form of an ingredient or unit will be different. To keep recipe readable
+
+https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html
+https://cldr.unicode.org/translation/grammatical-inflection
+
+Depending on the locale, there could be up to 6 plural forms used: zero, one, two, few, many, other.
 
 ## Detailed design
 
@@ -45,12 +60,7 @@ reasonably implement the feature.
 
 ## Effect on applications which use Cooklang
 
-Changes in Cooklang syntax often require supplementary UI changes in
-apps which use it (otherwise why these changes if nothing will
-use them). Describe in details what changes should be implemented.
-The detail in this section should be sufficient for someone
-who is *not* one of the authors to be able to reasonably implement
-the feature.
+App should guess locale from the system.
 
 ### CookCLI (terminal and web-server)
 
