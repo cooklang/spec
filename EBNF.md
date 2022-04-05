@@ -50,5 +50,5 @@ punctuation character = ? Unicode General Category P* ? ;
 symbol character = ? Unicode General Category S* ? ;
 
 comments = "-", "-", ? any character ?, new line character ;
-block comments = "[", "-", ? any character ?, "-", "]" ;
+block comments = "[", "-", ? any character except "-" followed by "]" ?, "-", "]" ;
 ```
