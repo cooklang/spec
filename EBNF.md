@@ -2,53 +2,55 @@
 # Cooklang EBNF description
 
 ```ebnf
-recipe = { metadata | step } ;
+recipe = { metadata | step }- ;
 
 (* not sure how to show that, but two below should start from a new line *)
-metadata = ">", ">", multiword, ":", { white space }, text item | number| amount, new line character ;
+metadata = ">", ">", { text item - ":" }-, ":", { text item }-, new line character ;
 step     = { text item | ingredient | cookware | timer }-, new line character ;
 
-
 ingredient           = one word ingredient | multiword ingredient ;
-one word ingredient  = "@", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ] ) ;
-multiword ingredient = "@", ( word, multiword, "{", { white space }, [ amount ], { white space }, "}" ) ;
+one word ingredient  = "@", ( word,                     [ "{", [ amount ], "}" ] ) ;
+multiword ingredient = "@", ( word, { text item - "{" }-, "{", [ amount ], "}" ) ;
 
 cookware             = one word cookware | multiword cookware ;
-one word cookware    = "#", ( word,          [ "{", { white space }, [ quantity ], { white space }, "}" ] ) ;
-multiword cookware   = "#", ( word, multiword, "{", { white space }, [ quantity ], { white space }, "}" ) ;
+one word cookware    = "#", ( word,                     [ "{", [ quantity ], "}" ] ) ;
+multiword cookware   = "#", ( word, { text item - "{" }-, "{", [ quantity ], "}" ) ;
 
 timer                = no name timer | one word timer | multiword timer ;
-no name timer        = "~", (                  "{", { white space }, [ amount ], { white space }, "}" ) ;
-one word timer       = "~", ( word,          [ "{", { white space }, [ amount ], { white space }, "}" ] ) ;
-multiword timer      = "~", ( word, multiword, "{", { white space }, [ amount ], { white space }, "}" ) ;
+no name timer        = "~", (                             "{", [ amount ], "}" ) ;
+one word timer       = "~", ( word,                     [ "{", [ amount ], "}" ] ) ;
+multiword timer      = "~", ( word, { text item - "{" }-, "{", [ amount ], "}" ) ;
 
-(* '%' separator will be changed soon to '*' *)
-amount   = quantity | ( quantity, { white space }, "%", { white space }, units );
-quantity = number | multiword ;
-units    = multiword ;
+amount   = quantity | ( quantity, "%", units ) ;
+quantity = { text item - "%" - "}" }- ;
+units    = { text item - "}" }- ;
 
+word      = { text item - white space - punctuation character }- ;
+text item = ? any character except new line character ? ;
 
-multiword = { word | white space | punctuation character }- ;
-(* yay, emoji! *)
-word      = { alphabetic character | digit | symbol character - cooklang ancillary character }- ;
-text item = { alphabetic character | digit | symbol character | punctuation character | white space }- ;
-
-number         = integer | fractional | decimal ;
-fractional     = integer, { white space }, "/", { white space }, integer ;
-decimal        = integer, ".", digit ;
-integer        = zero | ( non-zero digit, { digit } ) ;
-digit          = zero | non-zero digit ;
-non-zero digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
-zero           = "0" ;
-
-cooklang ancillary character = (* from symbols set *) ">" | "|" | "~" | (* from punctuation set *)  "@" | "#" | ":" | "{" | "}" | "%" ;
 (* https://en.wikipedia.org/wiki/Template:General_Category_(Unicode) *)
-alphabetic character = ? Unicode General Categories L* and M* ?;
-white space = ? Unicode General Category Zs and CHARACTER TABULATION (U+0009) ? ;
-new line character = ? newline characters (U+000A ~ U+000D, U+0085, U+2028, and U+2029) ? ;
+new line character    = ? newline characters (U+000A ~ U+000D, U+0085, U+2028, and U+2029) ? ;
+white space           = ? Unicode General Category Zs and CHARACTER TABULATION (U+0009) ? ;
 punctuation character = ? Unicode General Category P* ? ;
-symbol character = ? Unicode General Category S* ? ;
 
-comments = "-", "-", ? any character ?, new line character ;
+comments       = "-", "-", text item, new line character ;
 block comments = "[", "-", ? any character except "-" followed by "]" ?, "-", "]" ;
 ```
+
+# Symbols
+
+|**Usage**|**Notation**
+:-----:|:-----:
+definition |<code>**=**</code>
+concatenation |<code>,</code>
+termination |<code>;</code>
+alternation |<code>&#124;</code>
+optional |<code>[ ... ]</code>
+repetition |<code>{ ... }</code>
+repetition (at least 1) |<code>{ ... }-</code>
+grouping |<code>( ... )</code>
+terminal string |<code>" ... "</code>
+terminal string |<code>' ... '</code>
+comment |<code>(* ... *)</code>
+special sequence |<code>? ... ?</code>
+exception |<code>-</code>
