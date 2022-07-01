@@ -9,17 +9,21 @@ metadata = ">", ">", { text item - ":" }-, ":", { text item }-, new line charact
 step     = { text item | ingredient | cookware | timer }-, new line character ;
 
 ingredient           = one word ingredient | multiword ingredient ;
-one word ingredient  = "@", ( word,                     [ "{", [ amount ], "}" ] ) ;
-multiword ingredient = "@", ( word, { text item - "{" }-, "{", [ amount ], "}" ) ;
+one word ingredient  = "@", one word component ;
+multiword ingredient = "@", multiword component ;
 
 cookware             = one word cookware | multiword cookware ;
-one word cookware    = "#", ( word,                     [ "{", [ quantity ], "}" ] ) ;
-multiword cookware   = "#", ( word, { text item - "{" }-, "{", [ quantity ], "}" ) ;
+one word cookware    = "#", one word component ;
+multiword cookware   = "#", multiword component ;
 
 timer                = no name timer | one word timer | multiword timer ;
-no name timer        = "~", (                             "{", [ amount ], "}" ) ;
-one word timer       = "~", ( word,                     [ "{", [ amount ], "}" ] ) ;
-multiword timer      = "~", ( word, { text item - "{" }-, "{", [ amount ], "}" ) ;
+no name timer        = "~", no name component ;
+one word timer       = "~", one word component ;
+multiword timer      = "~", multiword component ;
+
+no name component    =                             "{", [ amount ], "}" ;
+one word component   = word,                     [ "{", [ amount ], "}" ] ;
+multiword component  = word, { text item - "{" }-, "{", [ amount ], "}" ;
 
 amount   = quantity | ( quantity, "%", units ) ;
 quantity = { text item - "%" - "}" }- ;
