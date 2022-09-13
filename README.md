@@ -152,6 +152,7 @@ Abstract:
 * [Tree-sitter](https://github.com/addcninblue/tree-sitter-cooklang)
 
 Particular languages:
+* [TypeScript](https://github.com/cooklang/cooklang-ts)
 * [.NET](https://github.com/heytherewill/cooklangnet)
 * [C](https://github.com/cooklang/cook-in-c) WIP
 * [Clojure](https://github.com/kiranshila/cooklang-clj) 
