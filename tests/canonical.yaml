@@ -21,7 +21,7 @@ tests:
 
   testCommentsAfterIngredients:
     source: |
-      @thyme{2%springs} -- testing comments
+      @thyme{2%sprigs} -- testing comments
       and some text
     result:
       steps:
@@ -29,7 +29,7 @@ tests:
           - type: ingredient
             name: "thyme"
             quantity: 2
-            units: "springs"
+            units: "sprigs"
           - type: text
             value: " "
         -
@@ -41,14 +41,14 @@ tests:
   testCommentsWithIngredients:
     source: |
       -- testing comments
-      @thyme{2%springs}
+      @thyme{2%sprigs}
     result:
       steps:
         -
           - type: ingredient
             name: "thyme"
             quantity: 2
-            units: "springs"
+            units: "sprigs"
       metadata: {}
 
 
@@ -74,7 +74,7 @@ tests:
       metadata: {}
 
 
-  testDirectionWithIngrident:
+  testDirectionWithIngredient:
     source: |
       Add @chilli{3%items}, @ginger{10%g} and @milk{1%l}.
     result:
@@ -225,7 +225,7 @@ tests:
         -
           - type: ingredient
             name: "milk"
-            quantity: 01/2
+            quantity: "01/2"
             units: "cup"
       metadata: {}
 
@@ -273,7 +273,7 @@ tests:
       metadata: {}
 
 
-  testIngridentExplicitUnits:
+  testIngredientExplicitUnits:
     source: |
       @chilli{3%items}
     result:
@@ -286,7 +286,7 @@ tests:
       metadata: {}
 
 
-  testIngridentExplicitUnitsWithSpaces:
+  testIngredientExplicitUnitsWithSpaces:
     source: |
       @chilli{ 3 % items }
     result:
@@ -299,7 +299,7 @@ tests:
       metadata: {}
 
 
-  testIngridentImplicitUnits:
+  testIngredientImplicitUnits:
     source: |
       @chilli{3}
     result:
@@ -312,7 +312,7 @@ tests:
       metadata: {}
 
 
-  testIngridentNoUnits:
+  testIngredientNoUnits:
     source: |
       @chilli
     result:
@@ -325,7 +325,7 @@ tests:
       metadata: {}
 
 
-  testIngridentNoUnitsNotOnlyString:
+  testIngredientNoUnitsNotOnlyString:
     source: |
       @5peppers
     result:
@@ -338,7 +338,7 @@ tests:
       metadata: {}
 
 
-  testIngridentWithNumbers:
+  testIngredientWithNumbers:
     source: |
       @tipo 00 flour{250%g}
     result:
@@ -351,7 +351,7 @@ tests:
       metadata: {}
 
 
-  testIngridentWithoutStopper:
+  testIngredientWithoutStopper:
     source: |
       @chilli cut into pieces
     result:
@@ -431,7 +431,7 @@ tests:
         "Cook Time": 30 minutes
 
 
-  testMultiWordIngrident:
+  testMultiWordIngredient:
     source: |
       @hot chilli{3}
     result:
@@ -444,7 +444,7 @@ tests:
       metadata: {}
 
 
-  testMultiWordIngridentNoAmount:
+  testMultiWordIngredientNoAmount:
     source: |
       @hot chilli{}
     result:
@@ -457,7 +457,7 @@ tests:
       metadata: {}
 
 
-  testMutipleIngridentsWithoutStopper:
+  testMutipleIngredientsWithoutStopper:
     source: |
       @chilli cut into pieces and @garlic
     result:
@@ -478,14 +478,14 @@ tests:
 
   testQuantityAsText:
     source: |
-      @thyme{few%springs}
+      @thyme{few%sprigs}
     result:
       steps:
         -
           - type: ingredient
             name: "thyme"
             quantity: few
-            units: "springs"
+            units: "sprigs"
       metadata: {}
 
 
