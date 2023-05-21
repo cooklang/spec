@@ -1,4 +1,4 @@
-version: 5
+version: 6
 tests:
   testBasicDirection:
     source: |
@@ -160,6 +160,7 @@ tests:
             value: " for some time"
       metadata: {}
 
+
   testEquipmentQuantity:
     source: |
       #frying pan{2}
@@ -170,6 +171,7 @@ tests:
             name: "frying pan"
             quantity: 2
       metadata: {}
+
 
   testEquipmentQuantityOneWord:
     source: |
@@ -182,6 +184,7 @@ tests:
             quantity: three
       metadata: {}
 
+
   testEquipmentQuantityMultipleWords:
     source: |
       #frying pan{two small}
@@ -192,6 +195,7 @@ tests:
             name: "frying pan"
             quantity: two small
       metadata: {}
+
 
   testFractions:
     source: |
@@ -566,7 +570,7 @@ tests:
             name: ""
       metadata: {}
 
-
+  
   testTimerWithName:
     source: |
       Fry for ~potato{42%minutes}
@@ -580,5 +584,245 @@ tests:
             units: "minutes"
             name: "potato"
       metadata: {}
+
+  
+  testSingleWordTimer:
+    source: |
+      Let it ~rest after plating
+    result:
+      steps:
+        -
+          - type: text
+            value: "Let it "
+          - type: timer
+            quantity: ""
+            units: ""
+            name: "rest"
+          - type: text
+            value: " after plating"
+      metadata: {}
+
+
+  testSingleWordTimerWithPunctuation:
+    source: |
+      Let it ~rest, then serve
+    result:
+      steps:
+        -
+          - type: text
+            value: "Let it "
+          - type: timer
+            quantity: ""
+            units: ""
+            name: "rest"
+          - type: text
+            value: ", then serve"
+      metadata: {}
+
+
+  testSingleWordTimerWithUnicodePunctuation:
+    source: |
+      Let it ~rest⸫ then serve
+    result:
+      steps:
+        -
+          - type: text
+            value: "Let it "
+          - type: timer
+            quantity: ""
+            units: ""
+            name: "rest"
+          - type: text
+            value: "⸫ then serve"
+      metadata: {}
+  
+  # NOTE: the space following `rest` is U+2009
+  testTimerWithUnicodeWhitespace:
+    source: |
+      Let it ~rest then serve
+    result:
+      steps:
+        -
+          - type: text
+            value: "Let it "
+          - type: timer
+            quantity: ""
+            units: ""
+            name: "rest"
+          - type: text
+            value: " then serve"
+      metadata: {}
+
+
+  testInvalidMultiWordTimer:
+    source: |
+      It is ~ {5}
+    result:
+      steps:
+        -
+          - type: text
+            value: "It is ~ {5}"
+      metadata: {}
+
+
+  testInvalidSingleWordTimer:
+    source: |
+      It is ~ 5
+    result:
+      steps:
+        -
+          - type: text
+            value: "It is ~ 5"
+      metadata: {}
+
+
+  testSingleWordIngredientWithPunctuation:
+    source: |
+      Add some @chilli, then serve
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add some "
+          - type: ingredient
+            quantity: "some"
+            units: ""
+            name: "chilli"
+          - type: text
+            value: ", then serve"
+      metadata: {}
+
+
+  testSingleWordIngredientWithUnicodePunctuation:
+    source: |
+      Add @chilli⸫ then bake
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add "
+          - type: ingredient
+            quantity: "some"
+            units: ""
+            name: "chilli"
+          - type: text
+            value: "⸫ then bake"
+      metadata: {}
+
+  
+  # NOTE: the space following `chilli` is U+2009
+  testIngredientWithUnicodeWhitespace:
+    source: |
+      Add @chilli then bake
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add "
+          - type: ingredient
+            quantity: "some"
+            units: ""
+            name: "chilli"
+          - type: text
+            value: " then bake"
+      metadata: {}
+
+
+  testInvalidMultiWordIngredient:
+    source: |
+      Message @ example{}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Message @ example{}"
+      metadata: {}
+
+
+  testInvalidSingleWordIngredient:
+    source: |
+      Message me @ example
+    result:
+      steps:
+        -
+          - type: text
+            value: "Message me @ example"
+      metadata: {}
+
+
+  testSingleWordCookwareWithPunctuation:
+    source: |
+      Place in #pot, then boil
+    result:
+      steps:
+        -
+          - type: text
+            value: "Place in "
+          - type: cookware
+            quantity: 1
+            units: ""
+            name: "pot"
+          - type: text
+            value: ", then boil"
+      metadata: {}
+
+  testSingleWordCookwareWithUnicodePunctuation:
+    source: |
+      Place in #pot⸫ then boil
+    result:
+      steps:
+        -
+          - type: text
+            value: "Place in "
+          - type: cookware
+            quantity: 1
+            units: ""
+            name: "pot"
+          - type: text
+            value: "⸫ then boil"
+      metadata: {}
+
+  
+  # NOTE: the space following `pot` is U+2009
+  testCookwareWithUnicodeWhitespace:
+    source: |
+      Add to #pot then boil
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add to "
+          - type: cookware
+            quantity: 1
+            units: ""
+            name: "pot"
+          - type: text
+            value: " then boil"
+      metadata: {}
+
+
+  testInvalidMultiWordCookware:
+    source: |
+      Recipe # 10{}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Recipe # 10{}"
+      metadata: {}
+
+
+  testInvalidSingleWordCookware:
+    source: |
+      Recipe # 5
+    result:
+      steps:
+        -
+          - type: text
+            value: "Recipe # 5"
+      metadata: {}
+
+# NOTE: Unicode newlines may be impossible to test using YAML, 
+# given how the markup uses them for semantic reasoning.
 
 # TODO add common syntax errors
