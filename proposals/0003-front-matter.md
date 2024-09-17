@@ -1,6 +1,6 @@
 # Front Matter
 
-* Proposal: [0002-front-matter](0002-front-matter.md)
+* Proposal: [0003-front-matter](0003-front-matter.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
 * Status: **Brainstorming**
 * Pull Request: https://github.com/cooklang/spec/pull/98
