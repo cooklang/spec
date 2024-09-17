@@ -2,10 +2,9 @@
 
 * Proposal: [0002-front-matter](0002-front-matter.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Review Manager: TBD
 * Status: **Brainstorming**
+* Pull Request: https://github.com/cooklang/spec/pull/98
 
-* Decision Notes: [Rationale](https://github.com/cooklang/spec/discussions),
 * Previous Revision: NA
 * Previous Proposal: NA
 
