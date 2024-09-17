@@ -1,4 +1,4 @@
-# Feature name
+# Front Matter
 
 * Proposal: [0002-front-matter](0002-front-matter.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
@@ -11,7 +11,7 @@
 ## Introduction
 
 Idea is to replace the current metadata syntax `>> key: value` with a more
-familiar and flexible YAML/TOML/JSON front matter format.
+familiar and flexible [YAML](https://www.json.org/)/[TOML](https://toml.io/)/[JSON](https://www.json.org/) front matter format.
 
 ## Motivation
 
