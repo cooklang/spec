@@ -126,4 +126,4 @@ and parsers are already written?
 ## Acknowledgments
 
 Idea is taken from a commentary in [this discussion](https://github.com/cooklang/spec/discussions/63#discussioncomment-8735359).
-Thanks to @ringods for the idea.
+Thanks to [@ringods](https://github.com/ringods) for the idea.
