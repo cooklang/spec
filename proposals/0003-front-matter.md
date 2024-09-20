@@ -11,7 +11,7 @@
 ## Introduction
 
 Idea is to replace the current metadata syntax `>> key: value` with a more
-familiar and flexible [YAML](https://www.json.org/)/[TOML](https://toml.io/)/[JSON](https://www.json.org/) front matter format.
+familiar and flexible [YAML](https://yaml.org/spec/1.2.2/) front matter format.
 
 ## Motivation
 
@@ -29,10 +29,10 @@ like YAML or TOML.
 ## Proposed solution
 
 Proposal is to replace the current metadata syntax `>> key: value` with a
-more flexible [YAML](https://www.json.org/)/[TOML](https://toml.io/)/[JSON](https://www.json.org/)
-front matter format. Similar to how [Markdown](https://en.wikipedia.org/wiki/Markdown)
-files use front matter to store metadata at the top of the file (for
-example, title of the page, date, etc [Hugo docs](https://gohugo.io/content-management/front-matter/)).
+more flexible [YAML](https://yaml.org/spec/1.2.2/) front matter format. Similar to how
+[Markdown](https://en.wikipedia.org/wiki/Markdown) files use front matter to
+store metadata at the top of the file (for example, title of the page, date,
+etc [Hugo docs](https://gohugo.io/content-management/front-matter/)).
 
 ## Detailed design
 
@@ -41,7 +41,7 @@ with the existing metadata syntax.
 
 ### YAML
 
-[YAML](https://www.json.org/) is a human-readable data serialization standard.
+[YAML](https://yaml.org/spec/1.2.2/) is a human-readable data serialization standard.
 
 To use YAML front matter, we need to add `---` at the beginning and
 `---` at the end of the front matter block.
@@ -55,45 +55,6 @@ tags:
   - italian
   - comfort food
 ---
-```
-
-### TOML
-
-[TOML](https://toml.io/) is a minimal configuration file format that's
-easy to understand.
-
-To use TOML front matter, we need to add `+++` at the beginning and
-`+++` at the end of the front matter block.
-
-```toml
-+++
-title = "Spaghetti Carbonara"
-tags = [
-  "pasta",
-  "quick",
-  "italian",
-  "comfort food"
-]
-+++
-```
-
-### JSON
-
-[JSON](https://www.json.org/) is a lightweight data interchange format.
-
-To use JSON front matter, we need to add `{` at the beginning and
-`}` at the end of the front matter block.
-
-```json
-{
-  "title": "Spaghetti Carbonara",
-  "tags": [
-    "pasta",
-    "quick",
-    "italian",
-    "comfort food"
-  ]
-}
 ```
 
 ## Effect on applications which use Cooklang
@@ -122,6 +83,9 @@ want to use such format for metadata?
 Also, alternative is to put effort and develop on current ad-hoc metadata
 syntax, but why would anyone want to do that when syntax is familar to everyone
 and parsers are already written?
+
+We also discussed an option to support multiple formats at the same time (YAML/TOML/JSON)
+but decided to stick with YAML only for simplicity.
 
 ## Acknowledgments
 
