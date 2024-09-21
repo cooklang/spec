@@ -2,7 +2,7 @@
 
 * Proposal: [0003-front-matter](0003-front-matter.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Brainstorming**
+* Status: **Accepted, in implementation**
 * Pull Request: https://github.com/cooklang/spec/pull/98
 
 * Previous Revision: NA
