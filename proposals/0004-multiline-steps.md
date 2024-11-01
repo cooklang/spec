@@ -44,18 +44,19 @@ Two examples below show how the same parsed recipe will look before and after th
 Before:
 
 ```cooklang
-Crack the @eggs{3} into a blender, then add the @plain flour{125%g}, @milk{250%ml} and @sea salt{1%pinch}, and blitz until smooth.
+A step,
+next step.
 
-Pour into a bowl and leave to stand for 15 minutes.
+A different step.
 ```
 
 After:
 
 ```cooklang
-Crack the @eggs{3} into a blender, then add the @plain flour{125%g},
-@milk{250%ml} and @sea salt{1%pinch}, and blitz until smooth.
+A step,
+the same step.
 
-Pour into a bowl and leave to stand for 15 minutes.
+A different step.
 ```
 
 ## Effect on applications which use Cooklang
