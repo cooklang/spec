@@ -6,9 +6,20 @@
 
 ## Introduction
 
-A short description of what the feature is. Try to keep it to a
-single-paragraph "elevator pitch" so the reader understands what
-problem this proposal is addressing.
+The proposal aims to make Cooklang recipes more readable and
+git-friendly by treating single line breaks as continuous
+text (similar to Markdown), while using double line breaks
+to separate distinct recipe steps.
+
+This allows recipe authors to wrap long lines at around
+80 characters for better readability in text editors and
+cleaner git diffs, without creating unintended step breaks.
+
+It's a simple change that makes recipe writing more natural
+while maintaining compatibility with existing applications.
+
+NOTE! This change will break the existing recipes which use single line breaks
+to separate steps.
 
 Discussion thread: [Discussion thread topic for that proposal](https://github.com/cooklang/spec/discussions/65).
 
@@ -20,8 +31,6 @@ clients like cat. Two line breaks generally indicate a paragraph break.
 
 Wrapping paragraphs with single line breaks at somewhere
 around 80 characters also makes git diffs somewhat nicer to work with.
-
-
 
 ## Proposed solution
 
