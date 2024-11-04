@@ -1,4 +1,4 @@
-# Feature name
+# Multiline steps
 
 * Proposal: [0004-multiline-steps](0004-multiline-steps.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
