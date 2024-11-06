@@ -93,7 +93,4 @@ and accessible without interference.
 
 ## Acknowledgments
 
-If significant changes or improvements suggested by members of the
-community were incorporated into the proposal as it developed, take a
-moment here to thank them for their contributions. Cooklang evolution is a
-collaborative process, and everyone's input should receive recognition!
+The feature has been implemented by [@Zheoni](https://github.com/Zheoni) as parser extension.
