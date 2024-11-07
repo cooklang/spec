@@ -39,7 +39,7 @@ a Markdown-inspired syntax for clarity and simplicity.
 
 To add a note, authors will simply use a > symbol at the beginning of a paragraph:
 
-```
+```cook
 > This dish is even better the next day, after the flavors have melded overnight.
 ```
 
@@ -55,13 +55,46 @@ The design introduces a straightforward syntax addition to the Cooklang grammar.
 In a recipe file, any line beginning with `>` will be recognized as a note and
 rendered as such in applications that support the new syntax.
 
+Also we should support starting every line with `>`, just like in markdown. For example:
+
+```cook
+> This is a long note
+> and the user writes the `>` at the beginning of
+> every line. All the `>` markup is stripped from the
+> note "output".
+```
+
+This is optional, so it's the same as:
+
+```cook
+> This is a long note
+and the user writes the `>` at the beginning of
+every line. All the `>` markup is stripped from the
+note "output".
+```
+
+It's the same as markdown blockquotes but one paragraph per note block.
+In Markdown this would be two paragraphs in the same blockquoute but
+in Cooklang it's all the same paragraph, newline is removed.
+
+```md
+> In markdown
+>
+> Two paragraphs
+```
+
+Unlike Markdown, Cooklang shouldn't support nesting notes inside each other.
+
 ### EBNF update
 
 ```
 recipe = { metadata | step | note }- ;
 
-note = ">", { text item }-, new line character ;
+blank line = { white space }, new line character ;
+note marker = ">" ;
+note = { note marker, { text item }, blank line }-, blank line ;
 ```
+Symbols and definitions are [here](https://github.com/cooklang/spec/blob/main/EBNF.md).
 
 ## Effect on applications which use Cooklang
 
