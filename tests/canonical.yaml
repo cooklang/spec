@@ -31,9 +31,7 @@ tests:
             quantity: 2
             units: "sprigs"
           - type: text
-            value: " "
-          - type: text
-            value: "and some text"
+            value: "  and some text"          
       metadata: {}
 
 
