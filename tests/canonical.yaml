@@ -32,7 +32,6 @@ tests:
             units: "sprigs"
           - type: text
             value: " "
-        -
           - type: text
             value: "and some text"
       metadata: {}
