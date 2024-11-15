@@ -2,7 +2,7 @@
 
 * Proposal: [0005-note-blocks](0005-note-blocks.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Accepted, in implementation**
+* Status: **Released**
 
 ## Introduction
 
