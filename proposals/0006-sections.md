@@ -50,7 +50,7 @@ A section ends either when the next section begins or at the end of the file.
 
 ## Detailed design
 
-The new syntax for sections introduces `=` as a section identifier repeated at least once, followed by the section name. Optionally users can mark end of section with `=` repetaed at least once. The `= Section` header will be parsed as a block header, and any steps that follow belong to that section until a new section is defined or the file ends.
+The new syntax for sections introduces `=` as a section identifier repeated at least once, followed by the optional section name. Optionally users can mark end of section with `=` repetaed at least once. The `= Section` header will be parsed as a block header, and any steps that follow belong to that section until a new section is defined or the file ends.
 
 ### Grammar Changes
 
