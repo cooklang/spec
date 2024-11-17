@@ -38,7 +38,7 @@ Introduce a standard set of metadata keys with clear purposes and formatting rul
 |`prep time`|Time for preparation steps only.|`2 hour 30 min`|
 |`cook time`|Time for actual cooking steps.|`10 minutes`|
 |`difficulty`|Recipe difficulty level.|`easy, medium, hard`|
-|`cuisine`|The cuisine of the recipe|`French`|
+|`cuisine`|The cuisine of the recipe.|`French`|
 |`diet`|Indicates a dietary restriction or guideline for which this recipe or menu item is suitable, e.g. diabetic, halal etc.|`gluten-free`|
 |`tags`|List of descriptive tags.|`[2022, baking, summer]`|
 |`image`|URL to a recipe image.|`https://example.org/recipe_image.jpg`|
