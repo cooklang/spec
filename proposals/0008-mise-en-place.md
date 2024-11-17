@@ -7,9 +7,7 @@
 
 ## Introduction
 
-A short description of what the feature is. Try to keep it to a
-single-paragraph "elevator pitch" so the reader understands what
-problem this proposal is addressing.
+In professional kitchens, ["mise en place"](https://en.wikipedia.org/wiki/Mise_en_place) (everything in its place) is a core principle. Similarly, in Cooklang, we can optimise the workflow by introducing a shorthand syntax for ingredients, allowing recipes to be written more concisely. This proposal addresses the need to simplify ingredient lists and reduce verbosity in recipes while maintaining clear and readable instructions. By enabling this syntax, users can avoid repetitive and redundant ingredient specifications, improving readability and ease of use.
 
 Discussion thread: [Allow for short hand preparations in ingredients list to not double count](https://github.com/cooklang/spec/discussions/57) and [Ingredient variants shorthand](https://github.com/cooklang/spec/discussions/74).
 
@@ -17,36 +15,47 @@ Extensions link: [Extensions](https://github.com/cooklang/cooklang-rs/blob/main/
 
 ## Motivation
 
-Describe the problems that this proposal seeks to address. If the
-problem is that some common pattern is currently hard to express, show
-how one can currently get a similar effect and describe its
-drawbacks. If it's completely new functionality that cannot be
-emulated, motivate why this new functionality would help Cooklang community
-use Cooklang better.
+One of Cooklang's main goals is to create a recipe format that is both human-readable and easy to write. However, many recipes require the repetition of common ingredient preparations (such as peeling, chopping, or marinating). This redundancy can result in unnecessarily lengthy instructions. For instance, the following two lines:
+
+```cooklang
+Peel and finely chop @onion{1}. Peel and mince @garlic{2%cloves}.
+
+Mix onion and garlic into paste.
+```
+
+While clear, the repetition of ingredient preparations creates clutter. A more efficient approach would be to allow shorthand notation for ingredient preparations, enabling us to condense the recipe while maintaining clarity.
 
 ## Proposed solution
 
-Describe your solution to the problem. Provide examples and describe
-how they work. Show how your solution is better than current
-workarounds (if any).
+The solution involves allowing users to define common ingredient preparations within the ingredient reference itself, using a shorthand syntax. This means that instead of writing out detailed preparation instructions multiple times, users can append these instructions directly to the ingredient references. This reduces redundancy without losing any important information.
+
+For example:
+
+**Current syntax:**
+
+```cooklang
+Peel and finely chop @onion{1}. Peel and mince @garlic{2%cloves}.
+
+Mix onion and garlic into paste.
+```
+
+**Shorthand syntax (proposed):**
+
+```cooklang
+Mix @onion{1}(peeled and finely chopped) and @garlic{2%cloves}(peeled and minced) into paste.
+```
+
+In this approach, the preparations are attached to the ingredient references, reducing the need to repeat them.
 
 ## Detailed design
 
-Describe the design of the solution in detail. If it involves new
-syntax in the language, show the additions and changes to the Cooklang
-grammar. If it's a new API, show the full API and its documentation
-comments detailing what it does. The detail in this section should be
-sufficient for someone who is *not* one of the authors to be able to
-reasonably implement the feature.
+The Cooklang grammar would need to support this new shorthand syntax by parsing the parentheses following an ingredient reference as part of the ingredient specification.
+
+We shouldn't parse shorthand preparations if there's a whitespace between ingredient reference and parentheses.
 
 ## Effect on applications which use Cooklang
 
-Changes in Cooklang syntax often require supplementary UI changes in
-apps which use it (otherwise why these changes if nothing will
-use them). Describe in details what changes should be implemented.
-The detail in this section should be sufficient for someone
-who is *not* one of the authors to be able to reasonably implement
-the feature.
+Mainly we want to add an extra cooking step zero before all the steps where we prepare required ingredients.
 
 ### CookCLI (terminal and web-server)
 
