@@ -2,7 +2,7 @@
 
 * Proposal: [0004-multiline-steps](0004-multiline-steps.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Accepted, in implementation**
+* Status: **Released**
 
 ## Introduction
 
