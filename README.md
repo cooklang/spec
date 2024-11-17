@@ -40,6 +40,17 @@ To use a unit of an item, such as weight or volume, add a `%` between the quanti
 Place @bacon strips{1%kg} on a baking sheet and glaze with @syrup{1/2%tbsp}.
 ```
 
+### Steps
+
+Each paragraph in your recipe file is a cooking step. Separate steps with an empty line.
+
+```
+A step,
+the same step.
+
+A different step.
+```
+
 ### Comments
 You can add comments up to the end of the line to Cooklang text with `--`.
 ```
@@ -52,6 +63,16 @@ Or block comments with `[- comment text -]`.
 ```
 Slowly add @milk{4%cup} [- TODO change units to litres -], keep mixing
 ```
+
+### Notes
+To include relevant background, insights, or personal anecdotes that aren't part of the cooking steps, use notes. Start a new line with `>` and add your story.
+
+```
+> Don't burn the roux!
+
+Mash @potato{2%kg} until smooth -- alternatively, boil 'em first, then mash 'em, then stick 'em in a stew.
+```
+
 
 ### Metadata
 You can add metadata tags to your recipe for information such as source (or author), meal, total prep time, and number of people served.
