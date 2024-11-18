@@ -61,8 +61,8 @@ CookCLI recipe output should contain ingredients with preparations.
 
 ```
 Ingredients:
-  garlic                             3 cloves, peeled and minced
-  onion                              1, peeled and finely chopped
+  garlic, peeled and minced          3 cloves
+  onion, peeled and finely chopped   1
   ...
 ```
 
@@ -75,6 +75,17 @@ Mobile apps will need UI adjustments to extra ingredient information in the reci
 
 ## Alternatives considered
 
+1. Add it inside quantity block after units using comma:
+
+```
+When the sauce has thickened, stir in the @fresh basil{1/4%cup, chopped}.
+```
+
+or pipe:
+
+```
+Combine @oats{6%cups|steel-cut}, @raisins{1%cup|golden}, and @coconut{2%cups|shredded} in a #bowl.
+```
 
 
 ## Acknowledgments
