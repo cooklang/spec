@@ -87,6 +87,7 @@ or pipe:
 Combine @oats{6%cups|steel-cut}, @raisins{1%cup|golden}, and @coconut{2%cups|shredded} in a #bowl.
 ```
 
+This approach may conflict with a future servings proposal where we need to use multiple quantities.
 
 ## Acknowledgments
 
