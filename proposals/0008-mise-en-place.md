@@ -7,7 +7,7 @@
 
 ## Introduction
 
-In professional kitchens, ["mise en place"](https://en.wikipedia.org/wiki/Mise_en_place) (everything in its place) is a core principle. Similarly, in Cooklang, we can optimise the workflow by introducing a shorthand syntax for ingredients, allowing recipes to be written more concisely. This proposal addresses the need to simplify ingredient lists and reduce verbosity in recipes while maintaining clear and readable instructions. By enabling this syntax, users can avoid repetitive and redundant ingredient specifications, improving readability and ease of use.
+In professional kitchens, ["mise en place"](https://en.wikipedia.org/wiki/Mise_en_place) (everything in its place) is a core principle. Similarly, in Cooklang, we can optimise the workflow by introducing a shorthand syntax for ingredients, allowing recipes to be written more concisely. By enabling this syntax, users can avoid repetitive and redundant instructions, improving readability and ease of use.
 
 Discussion thread: [Allow for short hand preparations in ingredients list to not double count](https://github.com/cooklang/spec/discussions/57) and [Ingredient variants shorthand](https://github.com/cooklang/spec/discussions/74).
 
@@ -55,28 +55,28 @@ We shouldn't parse shorthand preparations if there's a whitespace between ingred
 
 ## Effect on applications which use Cooklang
 
-Mainly we want to add an extra cooking step zero before all the steps where we prepare required ingredients.
-
 ### CookCLI (terminal and web-server)
 
-Does the proposal change the output of
-[CookCLI](https://github.com/cooklang/CookCLI)? Does it require adding
-a new sub-command to fully use this feature?
+CookCLI recipe output should contain ingredients with preparations.
+
+```
+Ingredients:
+  garlic                             3 cloves, peeled and minced
+  onion                              1, peeled and finely chopped
+  ...
+```
+
+Similar change is required for the web-server.
 
 ### Mobile applications
 
-Does the proposal require changes in mobile application UI? Describe
-what screens should be changed and how. Give as much details as
-possible.
+Mobile apps will need UI adjustments to extra ingredient information in the recipe details. Also it would be beneficial to add an extra cooking step before all the steps where we request the user to gather and prepare required ingredients.
+
 
 ## Alternatives considered
 
-Describe alternative approaches to addressing the same problem, and
-why you chose this approach instead.
+
 
 ## Acknowledgments
 
-If significant changes or improvements suggested by members of the
-community were incorporated into the proposal as it developed, take a
-moment here to thank them for their contributions. Cooklang evolution is a
-collaborative process, and everyone's input should receive recognition!
+Special thanks to the community members who have contributed to discussions about shorthand ingredient preparation. The feature has been implemented by [@Zheoni](https://github.com/Zheoni) as parser extension.
