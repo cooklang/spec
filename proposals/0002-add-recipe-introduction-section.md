@@ -2,8 +2,8 @@
 
 * Proposal: [0002-add-recipe-introduction-section](0002-add-recipe-introduction-section.md)
 * Authors: [Chris Born](https://github.com/pelted)
-* Review Manager: TBD
-* Status: **Awaiting review**
+* Review Manager: @dubadub
+* Status: **Rejected**
 
 ## Introduction
 
