@@ -30,24 +30,26 @@ Introduce a standard set of metadata keys with clear purposes and formatting rul
 
 | Key | Purpose | Example value |
 | --- | --- | --- |
-| `source` or `author` or `origin` | Where the recipe came from. Usually a URL, can also be text (eg. a book title) with anything hidden from display (ie. for machine use) in angle brackets afterwards. | `https://example.org/recipe`, `The Palomar Cookbook <urn:isbn:9781784720995>`, `mums` |
-| `time required` or `time` or `duration` | The preparation + cook time of the recipe. Various formats can be parsed, if in doubt use `HhMm` format to avoid plurals and locales. | `45 minutes`, `1 hour 30 minutes`,`1h30m` |
-| `servings` or `serves` or `yield` | Indicates how many people the recipe is for Used for scaling quantities. Leading number is used for scaling, anything else is ignored but shown as units. | `2`,`15 cups worth` |
-| `course` or `category` | Meal category or course. | `dinner` |
+| `source`, `source.name` | Where the recipe came from. Usually a URL, can also be text (eg. a book title) with anything hidden from display (ie. for machine use) in angle brackets afterwards. | `https://example.org/recipe`, `The Palomar Cookbook <urn:isbn:9781784720995>`, `mums` |
+| `author`, `source.author` | The author of the recipe. | `John Doe` |
+| `source.url`|The URL of the recipe.|`https://example.org/recipe`|
+| `servings`, `serves`, `yield` | Indicates how many people the recipe is for Used for scaling quantities. Leading number is used for scaling, anything else is ignored but shown as units. | `2`,`15 cups worth` |
+| `course`, `category` | Meal category or course. | `dinner` |
 | `locale` | The locale of the recipe. Used for spelling/grammar during edits, and for pluralisation of amounts. Uses ISO 639 language code, then optionally an underscore and the ISO 3166 alpha2 "country code" for dialect variants | `es_VE`, `en_GB`, `fr`  |
-|`prep time`|Time for preparation steps only.|`2 hour 30 min`|
-|`cook time`|Time for actual cooking steps.|`10 minutes`|
-|`difficulty`|Recipe difficulty level.|`easy, medium, hard`|
-|`cuisine`|The cuisine of the recipe.|`French`|
-|`diet`|Indicates a dietary restriction or guideline for which this recipe or menu item is suitable, e.g. diabetic, halal etc.|`gluten-free`|
-|`tags`|List of descriptive tags.|`[2022, baking, summer]`|
-|`image`|URL to a recipe image.|`https://example.org/recipe_image.jpg`|
-|`title`|Title of the recipe.|`Uzbek Manti`|
-
+| `time required`, `time` or `duration` | The preparation + cook time of the recipe. Various formats can be parsed, if in doubt use `HhMm` format to avoid plurals and locales. | `45 minutes`, `1 hour 30 minutes`,`1h30m` |
+| `prep time`, `time.prep`|Time for preparation steps only.|`2 hour 30 min`|
+| `cook time`, `time.cook`|Time for actual cooking steps.|`10 minutes`|
+| `difficulty`|Recipe difficulty level.|`easy`|
+| `cuisine`|The cuisine of the recipe.|`French`|
+| `diet`|Indicates a dietary restriction or guideline for which this recipe or menu item is suitable, e.g. diabetic, halal etc.|`gluten-free`, or array of values|
+| `tags`|List of descriptive tags.|`[2022, baking, summer]`|
+| `image`, `images`, `picture`, `pictures`|URL to a recipe image.|`https://example.org/recipe_image.jpg` or array of URLs|
+| `title`|Title of the recipe.|`Uzbek Manti`|
+| `notes`, `description`|Additional notes about the recipe.|`This recipe is a traditional Uzbek dish that is made with a variety of vegetables and meat.`|
 
 ## Detailed design
 
-The front-matter section in Cooklang files will allow key-value pairs as structured metadata. Keys are case-insensitive.
+The front-matter section in Cooklang files will allow key-value pairs as structured metadata. Keys are case-insensitive. Latest conflicting declaration takes precedence.
 
 ## Effect on applications which use Cooklang
 
