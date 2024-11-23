@@ -63,7 +63,7 @@ Mobile apps should allow users to search and filter recipes by these canonical m
 
 ## Alternatives considered
 
-We try to provide synonyms support, so users can use their guess to fill in the value.
+We try to provide synonyms support, so users can guess most of the time what the value should be.
 
 ## Acknowledgments
 
