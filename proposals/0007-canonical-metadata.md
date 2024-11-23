@@ -45,7 +45,7 @@ Introduce a standard set of metadata keys with clear purposes and formatting rul
 | `tags`|List of descriptive tags.|`[2022, baking, summer]`|
 | `image`, `images`, `picture`, `pictures`|URL to a recipe image.|`https://example.org/recipe_image.jpg` or array of URLs|
 | `title`|Title of the recipe.|`Uzbek Manti`|
-| `notes`, `description`|Additional notes about the recipe.|`This recipe is a traditional Uzbek dish that is made with a variety of vegetables and meat.`|
+| `introduction`, `description`|Additional notes about the recipe.|`This recipe is a traditional Uzbek dish that is made with a variety of vegetables and meat.`|
 
 ## Detailed design
 
