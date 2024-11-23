@@ -30,10 +30,10 @@ Introduce a standard set of metadata keys with clear purposes and formatting rul
 
 | Key | Purpose | Example value |
 | --- | --- | --- |
-| `source`, `source.name` | Where the recipe came from. Usually a URL, can also be text (eg. a book title) with anything hidden from display (ie. for machine use) in angle brackets afterwards. | `https://example.org/recipe`, `The Palomar Cookbook <urn:isbn:9781784720995>`, `mums` |
+| `source`, `source.name` | Where the recipe came from. Usually a URL, can also be text (eg. a book title). | `https://example.org/recipe`, `The Palomar Cookbook <urn:isbn:9781784720995>`, `mums` |
 | `author`, `source.author` | The author of the recipe. | `John Doe` |
-| `source.url`|The URL of the recipe.|`https://example.org/recipe`|
-| `servings`, `serves`, `yield` | Indicates how many people the recipe is for Used for scaling quantities. Leading number is used for scaling, anything else is ignored but shown as units. | `2`,`15 cups worth` |
+| `source.url`|The URL of the recipe if nested format is used.|`https://example.org/recipe`|
+| `servings`, `serves`, `yield` | Indicates how many people the recipe is for. Used for scaling quantities. Leading number is used for scaling, anything else is ignored but shown as units. | `2`,`15 cups worth` |
 | `course`, `category` | Meal category or course. | `dinner` |
 | `locale` | The locale of the recipe. Used for spelling/grammar during edits, and for pluralisation of amounts. Uses ISO 639 language code, then optionally an underscore and the ISO 3166 alpha2 "country code" for dialect variants | `es_VE`, `en_GB`, `fr`  |
 | `time required`, `time` or `duration` | The preparation + cook time of the recipe. Various formats can be parsed, if in doubt use `HhMm` format to avoid plurals and locales. | `45 minutes`, `1 hour 30 minutes`,`1h30m` |
