@@ -2,7 +2,7 @@
 
 * Proposal: [0007-canonical-metadata](0007-canonical-metadata.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Awaiting review**
+* Status: **Accepted, in implementation**
 
 ## Introduction
 
