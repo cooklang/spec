@@ -2,7 +2,7 @@
 
 * Proposal: [0008-mise-en-place](0008-mise-en-place.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Accepted, in implementation**
+* Status: **Released**
 
 
 ## Introduction

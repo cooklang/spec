@@ -2,7 +2,7 @@
 
 * Proposal: [0006-sections](0006-sections.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Accepted, in implementation**
+* Status: **Released**
 
 ## Introduction
 
