@@ -1,6 +1,8 @@
 
 # Cooklang EBNF description
 
+WIP, the EBNF is outdated and doesn't contain latest changes yet.
+
 ```ebnf
 recipe = { metadata | step | note }- ;
 
