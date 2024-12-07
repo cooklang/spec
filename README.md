@@ -161,7 +161,7 @@ Chicken French.3.jpg
 
 ### Canonical metadata
 
-To use your recipes across different apps, follow convetions how to name metadata in common cases:
+To use your recipes across different apps, follow the conventions on how to name metadata in common cases:
 
 | Key | Purpose | Example value |
 | --- | --- | --- |
