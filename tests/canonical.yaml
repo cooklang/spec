@@ -1,4 +1,4 @@
-version: 6
+version: 7
 tests:
   testBasicDirection:
     source: |
@@ -31,10 +31,7 @@ tests:
             quantity: 2
             units: "sprigs"
           - type: text
-            value: " "
-        -
-          - type: text
-            value: "and some text"
+            value: "  and some text"          
       metadata: {}
 
 
@@ -372,7 +369,9 @@ tests:
 
   testMetadata:
     source: |
-      >> sourced: babooshka
+      ---
+      sourced: babooshka
+      ---
     result:
       steps: []
       metadata:
@@ -381,18 +380,22 @@ tests:
 
   testMetadataBreak:
     source: |
-      hello >> sourced: babooshka
+      hello ---
+      sourced: babooshka
+      ---
     result:
       steps:
         -
           - type: text
-            value: "hello >> sourced: babooshka"
+            value: "hello --- sourced: babooshka ---"
       metadata: {}
 
 
   testMetadataMultiwordKey:
     source: |
-      >> cooking time: 30 mins
+      ---
+      cooking time: 30 mins
+      ---
     result:
       steps: []
       metadata:
@@ -401,7 +404,9 @@ tests:
 
   testMetadataMultiwordKeyWithSpaces:
     source: |
-      >>cooking time    :30 mins
+      ---
+      cooking time    :30 mins
+      ---
     result:
       steps: []
       metadata:
@@ -426,8 +431,10 @@ tests:
 
   testMultipleLines:
     source: |
-      >> Prep Time: 15 minutes
-      >> Cook Time: 30 minutes
+      ---
+      Prep Time: 15 minutes
+      Cook Time: 30 minutes
+      ---
     result:
       steps: []
       metadata:
@@ -508,7 +515,9 @@ tests:
 
   testServings:
     source: |
-      >> servings: 1|2|3
+      ---
+      servings: 1|2|3
+      ---
     result:
       steps: []
       metadata:
