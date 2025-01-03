@@ -7,9 +7,13 @@
 
 ## Introduction
 
-This proposal introduces a standardized way to specify serving sizes in recipes and scale ingredient quantities accordingly. It allows recipe authors to define supported serving sizes and automatically or manually adjust ingredient quantities, making it easier for users to adapt recipes to their needs.
+This proposal introduces a standardized way to specify serving sizes in recipes and scale
+ingredient quantities accordingly. It allows recipe authors to define supported
+serving sizes and automatically or manually adjust ingredient quantities, making
+it easier for users to adapt recipes to their needs.
 
-Discussion thread: [Is servings supported?](https://github.com/cooklang/spec/discussions/70) and [Default serving size](https://github.com/cooklang/spec/discussions/66).
+Discussion thread: [Is servings supported?](https://github.com/cooklang/spec/discussions/70)
+and [Default serving size](https://github.com/cooklang/spec/discussions/66).
 
 ## Motivation
 
@@ -28,23 +32,70 @@ and for applications to provide serving-related features.
 
 The solution utilizes two main components:
 
-1. A metadata tag for defining supported serving sizes (introduced in https://github.com/cooklang/spec/blob/main/proposals/0007-canonical-metadata.md):
+1. A metadata tag for defining supported serving sizes (introduced in
+https://github.com/cooklang/spec/blob/main/proposals/0007-canonical-metadata.md):
 
->> servings: number(|number)*
+```cooklang
+---
+servings: 2
+---
+```
+
+If metadata tag isn't present we assume that servings is 1. The ingredients in a recipe are
+scaled to this specified servings size.
 
 2. Two ways to specify ingredient scaling:
 
-a. Automatic linear scaling using the `*` operator:
-```
-Add @milk{1/2*%cup} and mix until smooth.
+a. Default linear scaling. Regular Cooklang recipe should scale each ingredient linearly:
+
+```cooklang
+Add @milk{1/2%cup} and mix until smooth.
 ```
 
-b. Manual scaling with explicit quantities for each serving size:
+This will use defined servings and rescale appropriately. Imagine having this recipe:
+
+```cooklang
+---
+servings: 2
+---
+
+Add @milk{1/2%cup} and mix until smooth.
 ```
-Add @milk{1|2|3%cup} and mix until smooth.
+
+To make it scaled to 4 servings we just linearly multiply each ingredient to ratio of desired serving to default serving.
+
+```cooklang
+-- ratio = 2 (4 desired servings / 2 default servings)
+-- multiply milk quanity by ratio 2
+
+Add @milk{1%cup} and mix until smooth.
+```
+
+b. TODO, do we really need that? Manual Quanted scaling with explicit quantities for each serving size. We can give supported servings and in each ingredient specify manual amounts.
+
+```cooklang
+---
+servings: 2|4|6
+---
+
+Add @milk{1|1.5|2%cup} and mix until smooth.
 ```
 
 This approach provides flexibility while maintaining simplicity. Linear scaling covers most common cases, while manual scaling handles exceptions where ingredients don't scale linearly.
+
+TODO We might go extra mile an provide some fitting function that will interpolate/extrapolate scaling for not defined values
+
+c. Unscaled. Sometimes we need to lock ingredient amount to one value
+
+```cooklang
+---
+servings: 2
+---
+
+Add @milk{=1%cup} and mix until smooth.
+```
+
+TODO play with baking percentages
 
 ## Detailed design
 
@@ -64,9 +115,9 @@ The servings metadata tag follows this format:
 
 1. Linear scaling (TODO make it so existing recipes scale linearly):
 ```
-@ingredient{quantity*%unit}
+@ingredient{quantity%unit}
 ```
-- The `*` operator indicates the quantity should be multiplied by the serving size ratio
+Nothing required. Default recipe should scale linearly.
 
 2. Manual scaling:
 ```
@@ -76,11 +127,11 @@ The servings metadata tag follows this format:
 - Each quantity can be a number or fraction
 - Quantities are separated by the pipe character (|)
 
-3. Unscaled ingredients:
+3. Pinned ingredients:
 ```
-@ingredient{quantity%unit}
+@ingredient{=quantity%unit}
 ```
-- Ingredients without scaling notation maintain the same quantity for all serving sizes
+- Ingredients quanitites locked with ^ scaling notation maintain the same quantity for all serving sizes
 
 ## Effect on applications which use Cooklang
 
