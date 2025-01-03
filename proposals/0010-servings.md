@@ -44,7 +44,7 @@ servings: 2
 If metadata tag isn't present we assume that servings is 1. The ingredients in a recipe are
 scaled to this specified servings size.
 
-2. Two ways to specify ingredient scaling:
+2. Three ways to specify ingredient scaling:
 
 a. Default linear scaling. Regular Cooklang recipe should scale each ingredient linearly:
 
@@ -95,7 +95,20 @@ servings: 2
 Add @milk{=1%cup} and mix until smooth.
 ```
 
-TODO play with baking percentages
+### Baking percentages
+
+In this setup baking percentages should just work.
+
+
+```cooklang
+Mix @flour{1000%g} and @water{600%g}.
+```
+
+Users should be able to calculate ratio factor knowing how much flour they want to use. Ratio = 600 / 1000 = 0.6.
+
+### Timers
+
+
 
 ## Detailed design
 
