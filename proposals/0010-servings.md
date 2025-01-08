@@ -99,6 +99,9 @@ and hence cooking time should stay the same. Of course there're recipes
 that need timer scaling for example turkey roasting, but in that case we can
 leave it up to user to set the proper timer.
 
+### Cookware
+
+Cookware doesn't scale.
 
 ## Detailed design
 
