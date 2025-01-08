@@ -94,7 +94,10 @@ Users should be able to calculate ratio factor knowing how much flour they want 
 
 ### Timers
 
-Timers should be scaled similarly to ingredients. Or not scaled by default???
+Timers don't scale. Seems that in most cases portion size stays the same
+and hence cooking time should stay the same. Of course there're recipes
+that need timer scaling for example turkey roasting, but in that case we can
+leave it up to user to set the proper timer.
 
 
 ## Detailed design
