@@ -2,7 +2,7 @@
 
 * Proposal: [0010-servings](0010-servings.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Awaiting review**
+* Status: **Accepted, in implementation**
 
 ## Introduction
 
