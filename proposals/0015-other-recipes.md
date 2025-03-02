@@ -80,12 +80,23 @@ Mobile apps need to:
 
 ## Alternatives considered
 
-1. **Absolute paths only**: Considered only allowing absolute paths from recipe root, but this would make recipe collections less portable.
+1. Separate syntax for referencing recipes `@@recipe_name{quantity}`.
+   This would be more consistent with the existing syntax for ingredients,
+   but it would be more verbose and harder to read.
 
-2. **Recipe IDs**: Considered using unique IDs instead of file paths, but this would make recipes less human-readable and harder to manage manually.
+2. Considered only allowing absolute paths from recipe root,
+   but this would make recipe collections less portable.
 
-3. **Include syntax**: Considered using an include-style syntax like `!include`, but the `@` syntax is more consistent with Cooklang's existing conventions for ingredients.
+3. Considered using unique IDs instead of file paths,
+   but this would make recipes less human-readable and harder to manage manually.
+
+4. Considered using an include-style syntax
+   like `!include`, but the `@` syntax is more consistent
+   with Cooklang's existing conventions for ingredients.
 
 ## Acknowledgments
 
-Thanks to the Cooklang community members who provided feedback on the relative path syntax and cross-platform compatibility considerations.
+Thanks to the Cooklang community members who provided feedback
+on the relative path syntax and cross-platform compatibility considerations.
+Thanks to [@dubadub](https://github.com/dubadub) for having that implemented with slightly different syntax
+as [parser extension](https://github.com/cooklang/spec/blob/proposal/0015-other-recipes/proposals/0015-other-recipes.md).
