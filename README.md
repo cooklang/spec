@@ -146,10 +146,10 @@ tuna|chicken of the sea
 
 ## Conventions
 
-There're things which aren't part of the language specification but rather common conventions used in tools build on top of the language.
+There are things which aren't part of the language specification but rather common conventions used in tools built on top of the language.
 
 ### Adding Pictures
-You can add images to your recipe by including a supported image file (`.png`,`.jpg`) matching the name of the recipe recipe in the same directory.
+You can add images to your recipe by including a supported image file (`.png`,`.jpg`) matching the name of the recipe in the same directory.
 ```sh
 Baked Potato.cook
 Baked Potato.jpg
