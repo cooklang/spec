@@ -10,6 +10,8 @@
    * [Cookware](#cookware)
    * [Timer](#timer)
 * [Shopping Lists](#shopping-lists)
+* [Pantry Configuration](#pantry-configuration)
+* [Scaling and Servings](#scaling-and-servings)
 * [Conventions](#conventions)
    * [Adding Pictures](#adding-pictures)
    * [Canonical metadata](#canonical-metadata)
@@ -183,6 +185,112 @@ To use your recipes across different apps, follow the conventions on how to name
 | `image`, `images`, `picture`, `pictures`|URL to a recipe image.|`https://example.org/recipe_image.jpg` or array of URLs|
 | `title`|Title of the recipe.|`Uzbek Manti`|
 | `introduction`, `description`|Additional notes about the recipe.|`This recipe is a traditional Uzbek dish that is made with a variety of vegetables and meat.`|
+
+## Pantry Configuration
+
+Cooklang supports a pantry inventory file in TOML format to track ingredients you have on hand. This file helps with meal planning and shopping list generation.
+
+### Format
+
+The pantry file uses TOML sections to organize items by storage location:
+
+```toml
+[freezer]
+cranberries = "500%g"
+spinach = { bought = "05.05.2024", expire = "05.06.2025", quantity = "1%kg" }
+
+[fridge]
+milk = { expire = "10.05.2024", quantity = "1%L" }
+
+[pantry]
+rice = "5%kg"
+```
+
+### Supported Attributes
+
+Each item can be specified as either:
+- A simple quantity string: `"500%g"`
+- An object with attributes:
+  - `bought`: Date when the item was purchased (e.g., "05.05.2024")
+  - `expire`: Expiration date of the item (e.g., "05.06.2025")
+  - `quantity`: Amount using Cooklang quantity format (e.g., "1%kg")
+  - `low`: Low stock threshold for alerts (e.g., "100%g")
+
+### Example
+
+```toml
+[freezer]
+ice_cream = "2%L"
+frozen_peas = { bought = "01.01.2024", quantity = "500%g", low = "200%g" }
+
+[fridge]
+cheese = { expire = "15.05.2024" }
+yogurt = { bought = "05.05.2024", expire = "12.05.2024", quantity = "500%ml" }
+
+[pantry]
+flour = "5%kg"
+pasta = { quantity = "1%kg", low = "200%g" }
+```
+
+Applications can use this data to check ingredient availability, track expiration dates, and generate shopping lists based on what's running low.
+
+## Scaling and Servings
+
+Cooklang supports automatic recipe scaling based on servings. This allows users to adjust recipes for different numbers of people.
+
+### Defining Servings
+
+Specify the default serving size in the metadata:
+
+```yaml
+---
+servings: 2
+---
+```
+
+If not specified, recipes default to 1 serving. All ingredient quantities in the recipe are written for this default serving size.
+
+### Scaling Behavior
+
+#### Linear Scaling (Default)
+Most ingredients scale linearly with servings:
+
+```cooklang
+Add @milk{1/2%cup} and mix until smooth.
+```
+
+When scaling from 2 to 4 servings, the milk quantity doubles to 1 cup.
+
+#### Fixed Quantities
+Some ingredients shouldn't scale. Use `=` to lock the quantity:
+
+```cooklang
+Season with @salt{=1%tsp} to taste.
+```
+
+This keeps salt at 1 tsp regardless of serving size.
+
+### What Doesn't Scale
+
+- **Timers**: Cooking times typically remain the same regardless of portion size
+- **Cookware**: Pan and pot sizes don't automatically adjust
+
+### Example
+
+```cooklang
+---
+servings: 4
+---
+
+Mix @flour{500%g} with @water{300%ml}.
+Add @yeast{=1%packet} and let rise for ~{1%hour}.
+```
+
+When scaled to 8 servings:
+- Flour becomes 1000g (doubled)
+- Water becomes 600ml (doubled)
+- Yeast stays at 1 packet (fixed)
+- Rising time remains 1 hour (timers don't scale)
 
 ## Advanced
 
