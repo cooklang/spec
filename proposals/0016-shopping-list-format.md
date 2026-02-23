@@ -50,8 +50,8 @@ Example:
 ```
 ./Breakfast/Easy Pancakes{2}
   ./Sauces/Maple Syrup{1}
-  butter{100%g}
-  eggs{4}
+  strawberries{100%g}
+  honey
 free hand ingredient{4%l}
 salt
 // remember to check the pantry
