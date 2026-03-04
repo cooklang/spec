@@ -61,6 +61,17 @@ the same step.
 A different step.
 ```
 
+If you want to force a line break within a step, end the line with a backslash `\`. The backslash will be replaced with a newline character when rendered.
+
+```cooklang
+Lay out the @rice paper{1}.\
+Top with @avocado{1/2}(sliced),\
+@cucumber{1/2}(julienned),\
+and @cooked shrimp{4}.
+```
+
+This will render as multiple lines within a single step.
+
 ### Comments
 You can add comments up to the end of the line to Cooklang text with `--`.
 ```cooklang
