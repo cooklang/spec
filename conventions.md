@@ -30,6 +30,18 @@ Menu files use sections to organise days (or meals) and recipe references to pul
 @./breads/focaccia{1}
 ```
 
+Sections can include dates in `YYYY-MM-DD` format. Applications recognise these dates and can surface a shortcut link to the relevant day's plan (e.g. highlighting today's menu).
+
+```cooklang
+== Day 1 (2026-03-07) ==
+
+@./breakfast/shakshuka{4%servings}
+
+== Day 2 (2026-03-08) ==
+
+@./mains/chicken stir fry{4%servings}
+```
+
 ## Scaling Referenced Recipes
 
 When you reference another recipe with `@./path/to/recipe{quantity}`, the quantity controls how the referenced recipe is scaled:

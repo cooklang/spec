@@ -114,6 +114,10 @@ Boil @eggs{2} for ~eggs{3%minutes}.
 
 Applications can use this name in notifications.
 
+## Conventions
+
+Beyond the core language, the Cooklang ecosystem has common conventions for file types (`.cook` for recipes, `.menu` for meal plans), shopping list configuration, pantry inventory, recipe scaling, adding pictures, and canonical metadata keys. See [conventions.md](conventions.md) for details.
+
 ## Advanced
 
 ### Notes
