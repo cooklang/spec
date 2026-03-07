@@ -63,6 +63,8 @@ Chicken French.0.jpg
 Chicken French.3.jpg
 ```
 
+Alternatively, you can set an image URL in the recipe metadata using the `image` key (see [Canonical metadata](#canonical-metadata)).
+
 ## Canonical metadata
 
 To use your recipes across different apps, follow the conventions on how to name metadata in common cases:
@@ -89,6 +91,8 @@ To use your recipes across different apps, follow the conventions on how to name
 ## Shopping Lists
 To support the creation of shopping lists by apps and the command line tool, Cooklang includes a specification for a configuration file to define how ingredients should be grouped on the final shopping list.
 You can use `[]` to define a category name. These names are arbitrary, so you can customize them to meet your needs. For example, each category could be an aisle or section of the store, such as `[produce]` and `[deli]`.
+
+The order of sections and ingredients in the configuration file matters — apps display them exactly as written. Arrange sections to match the layout of your store so you can shop aisle by aisle without backtracking.
 ```toml
 [produce]
 potatoes
