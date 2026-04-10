@@ -8,8 +8,9 @@
 
 This proposal defines a plain-text format for shopping lists that can represent
 recipe references with multipliers, free-hand ingredients with quantities, and
-hierarchical nesting. The format is designed to be human-readable and editable
-while supporting round-trip parsing and serialization.
+hierarchical nesting. It also defines a companion check file for tracking which
+ingredients have been acquired. The format is designed to be human-readable and
+editable while supporting round-trip parsing and serialization.
 
 ## Motivation
 
@@ -27,6 +28,7 @@ Users need a way to:
 3. Organize items hierarchically so it's clear which ingredients belong to which
    recipe
 4. Edit the list by hand in any text editor before heading to the store
+5. Check off items while shopping, with support for undo
 
 Without a standard format, each application invents its own representation,
 making it impossible to share shopping lists across tools or version-control them
@@ -34,18 +36,24 @@ alongside recipe files.
 
 ## Proposed solution
 
-A line-oriented plain-text format where:
+A line-oriented plain-text format consisting of two hidden files per directory:
 
-- **Recipe references** start with `./` followed by a path and an optional
+- **`.shopping-list`** — the shopping list definition
+- **`.shopping-checked`** — an append-only log of checked/unchecked ingredients
+
+The shopping list definition uses:
+
+- **Recipe references** starting with `./` followed by a path and an optional
   multiplier in braces: `./Breakfast/Easy Pancakes{2}`
-- **Ingredients** are plain names with an optional quantity in braces:
+- **Ingredients** as plain names with an optional quantity in braces:
   `olive oil{100%ml}`
-- **Nesting** is expressed with 2-space indentation — children appear indented
+- **Nesting** expressed with 2-space indentation — children appear indented
   under their parent recipe
-- **Comments** use `//` (line or inline)
+- **Comments** using `--` (line or inline) and `[- -]` (block), consistent with
+  Cooklang recipe syntax
 - **Blank lines** are ignored
 
-Example:
+Example `.shopping-list`:
 
 ```
 ./Breakfast/Easy Pancakes{2}
@@ -54,17 +62,32 @@ Example:
   honey
 free hand ingredient{4%l}
 salt
-// remember to check the pantry
+-- remember to check the pantry
 ```
 
 This reads as: "Easy Pancakes scaled ×2 (which itself needs Maple Syrup ×1,
-100 g butter, and 4 eggs), plus 4 l of a free-hand ingredient and some salt."
+100 g strawberries, and honey), plus 4 l of a free-hand ingredient and some
+salt."
+
+Example `.shopping-checked`:
+
+```
++ salt
++ strawberries
++ free hand ingredient
+- strawberries
++ strawberries
+```
+
+Final state: salt (checked), strawberries (checked), free hand ingredient
+(checked).
 
 ## Detailed design
 
-### Grammar
+### Shopping list grammar
 
-A shopping list is a sequence of **lines**. Each line is one of:
+A shopping list (`.shopping-list`) is a sequence of **lines**. Each line is one
+of:
 
 | Line form | Meaning |
 |---|---|
@@ -73,11 +96,12 @@ A shopping list is a sequence of **lines**. Each line is one of:
 | `name{quantity%unit}` | Ingredient with quantity and unit |
 | `name{quantity}` | Ingredient with quantity, no unit |
 | `name` | Bare ingredient (no quantity) |
-| `// ...` | Comment (full line) |
+| `-- ...` | Line comment |
+| `[- ... -]` | Block comment |
 | *(empty)* | Ignored |
 
-Inline comments are supported — everything after `//` on a line is discarded
-before parsing.
+Inline comments are supported — everything after `--` on a line is discarded
+before parsing. Block comments `[- ... -]` may span multiple lines.
 
 More formally:
 
@@ -85,7 +109,7 @@ More formally:
 shopping_list  = { line }
 line           = blank | comment | indented_item
 blank          = WS* NL
-comment        = WS* "//" any* NL
+comment        = WS* "--" any* NL
 indented_item  = INDENT item NL
 item           = recipe_ref | ingredient
 recipe_ref     = "./" path [ "{" multiplier "}" ]
@@ -97,6 +121,31 @@ quantity       = <any chars except '}'>      (* e.g. "4%l", "500%g", "2" *)
 INDENT         = (" " " ")*                 (* 0, 2, 4, … spaces *)
 ```
 
+### Check file grammar
+
+A check file (`.shopping-checked`) is a sequence of **lines**:
+
+| Line form | Meaning |
+|---|---|
+| `+ name` | Ingredient checked (acquired) |
+| `- name` | Ingredient unchecked |
+| *(empty)* | Ignored |
+
+`name` is the ingredient name only — no quantities, no braces.
+
+The last entry for a given ingredient name determines its current state. If the
+last entry is `+`, the ingredient is checked; if `-`, it is unchecked.
+
+More formally:
+
+```
+check_file     = { check_line }
+check_line     = blank | check_entry
+blank          = WS* NL
+check_entry    = ("+" | "-") " " name NL
+name           = <any non-empty chars>
+```
+
 ### Indentation rules
 
 - Each indentation level is exactly **2 spaces**.
@@ -104,6 +153,41 @@ INDENT         = (" " " ")*                 (* 0, 2, 4, … spaces *)
 - Children must be indented exactly one level deeper than their parent.
 - An ingredient at the top level (indent 0) is a free-hand item not associated
   with any recipe.
+
+### Check semantics
+
+The `.shopping-checked` file is an append-only log. Applications append `+ name`
+when the user checks an ingredient and `- name` when the user unchecks it. The
+file is never edited in-place except during compaction.
+
+An ingredient's checked state is determined by its **last entry** in the log. If
+an ingredient has no entry, it is unchecked.
+
+### Compaction
+
+Compaction rebuilds the `.shopping-checked` file to its minimal form. A
+conforming compactor must:
+
+1. **Replay** the log top-to-bottom, determining the final state for each
+   ingredient (last entry wins)
+2. **Reconcile** against the current `.shopping-list` — drop any entries for
+   ingredients that no longer appear in the shopping list
+3. **Rewrite** the file with one `+ name` line per checked ingredient
+   (unchecked ingredients are simply omitted)
+
+After compaction the file contains only `+` entries. Compaction is
+**idempotent**: compacting an already-compacted file produces the same file.
+
+The spec defines the semantics; when to compact is left to applications.
+
+### File naming and visibility
+
+Both files live in the same directory. The full filenames are `.shopping-list`
+and `.shopping-checked` — there is exactly one shopping list per directory.
+
+On Unix-like systems these files are hidden by convention (dot-prefix). On
+Windows, applications should set the hidden file attribute to keep them out of
+normal directory listings.
 
 ### Multiplier
 
@@ -126,6 +210,8 @@ A conforming serializer must:
 2. Write ingredients as `name{quantity}` (omit braces when there is no quantity)
 3. Indent children with 2 spaces per nesting level
 4. Terminate every line with a newline
+5. Write the shopping list to `.shopping-list`
+6. Write check entries to `.shopping-checked` using `+ name` / `- name` syntax
 
 Round-trip fidelity: `parse(serialize(list)) == list`.
 
@@ -133,26 +219,31 @@ Round-trip fidelity: `parse(serialize(list)) == list`.
 
 ### CookCLI (terminal and web-server)
 
-CookCLI should support reading and writing `.shopping` (or similar) files using
-this format. A possible sub-command:
+CookCLI should support reading and writing `.shopping-list` and
+`.shopping-checked` files. Possible sub-commands:
 
 ```
 cook shopping-list create --recipe "Pancakes{2}" --recipe "Salad{1}" --add "milk{1%l}"
-cook shopping-list show list.shopping
+cook shopping-list show
+cook shopping-list check salt
+cook shopping-list uncheck salt
+cook shopping-list compact
 ```
 
 The web-server could expose an endpoint that returns a shopping list for selected
-recipes.
+recipes, along with checked state.
 
 ### Mobile applications
 
 Mobile apps should allow users to:
 
-1. Select recipes and quantities, then generate a shopping list in this format
+1. Select recipes and quantities, then generate a `.shopping-list` file
 2. Display the hierarchical structure with recipe groupings
 3. Add free-hand ingredients
 4. Export / share the list as plain text
-5. Check off items while shopping
+5. Check off items while shopping (appending to `.shopping-checked`)
+6. Display checked state by replaying the check log
+7. Compact the check file periodically or on user action
 
 ## Alternatives considered
 
