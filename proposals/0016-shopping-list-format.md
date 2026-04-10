@@ -56,31 +56,35 @@ The shopping list definition uses:
 Example `.shopping-list`:
 
 ```
-./Breakfast/Easy Pancakes{2}
-  ./Sauces/Maple Syrup{1}
-  strawberries{100%g}
-  honey
-free hand ingredient{4%l}
+./Plans/3 Day Plan I
+  ./Breakfast/Mexican Style Burrito{2}
+    ./Components/Guacamole{2}
+    ./Components/Beans{2}
+  ./Salads/Boring{2}
+  ./Slowcooker/Slow-cooker beef stew{0.5}
+olive oil{4%l}
 salt
 -- remember to check the pantry
 ```
 
-This reads as: "Easy Pancakes scaled ×2 (which itself needs Maple Syrup ×1,
-100 g strawberries, and honey), plus 4 l of a free-hand ingredient and some
-salt."
+This reads as: "3 Day Plan I containing Mexican Style Burrito ×2 (which itself
+needs Guacamole ×2 and Beans ×2), Boring Salad ×2, and half a batch of beef
+stew — plus 4 l of olive oil and salt as free-hand items."
+
+Nested items are always recipe references. Plain ingredients only appear at the
+top level (indent 0) as free-hand items not associated with any recipe.
 
 Example `.shopping-checked`:
 
 ```
 + salt
-+ strawberries
-+ free hand ingredient
-- strawberries
-+ strawberries
++ avocados
++ olive oil
+- avocados
++ avocados
 ```
 
-Final state: salt (checked), strawberries (checked), free hand ingredient
-(checked).
+Final state: salt (checked), avocados (checked), olive oil (checked).
 
 ## Detailed design
 
@@ -91,11 +95,11 @@ of:
 
 | Line form | Meaning |
 |---|---|
-| `./path{multiplier}` | Recipe reference with multiplier |
-| `./path` | Recipe reference without multiplier |
-| `name{quantity%unit}` | Ingredient with quantity and unit |
-| `name{quantity}` | Ingredient with quantity, no unit |
-| `name` | Bare ingredient (no quantity) |
+| `./path{multiplier}` | Recipe reference with multiplier (any indent level) |
+| `./path` | Recipe reference without multiplier (any indent level) |
+| `name{quantity%unit}` | Ingredient with quantity and unit (top-level only) |
+| `name{quantity}` | Ingredient with quantity, no unit (top-level only) |
+| `name` | Bare ingredient (no quantity, top-level only) |
 | `-- ...` | Line comment |
 | `[- ... -]` | Block comment |
 | *(empty)* | Ignored |
@@ -103,22 +107,25 @@ of:
 Inline comments are supported — everything after `--` on a line is discarded
 before parsing. Block comments `[- ... -]` may span multiple lines.
 
+Only recipe references may be nested (indented). Plain ingredients are always
+top-level (indent 0) free-hand items.
+
 More formally:
 
 ```
 shopping_list  = { line }
-line           = blank | comment | indented_item
+line           = blank | comment | top_level_item | indented_ref
 blank          = WS* NL
 comment        = WS* "--" any* NL
-indented_item  = INDENT item NL
-item           = recipe_ref | ingredient
+top_level_item = (recipe_ref | ingredient) NL
+indented_ref   = INDENT recipe_ref NL
 recipe_ref     = "./" path [ "{" multiplier "}" ]
 ingredient     = name [ "{" quantity "}" ]
 path           = <any chars except '{' and '}'>
-name           = <any non-empty chars except '{' and '}'>
+name           = <any non-empty chars except '{', '}', and not starting with "./">
 multiplier     = NUMBER                     (* integer or decimal *)
 quantity       = <any chars except '}'>      (* e.g. "4%l", "500%g", "2" *)
-INDENT         = (" " " ")*                 (* 0, 2, 4, … spaces *)
+INDENT         = (" " " ")+                 (* 2, 4, 6, … spaces *)
 ```
 
 ### Check file grammar
@@ -149,10 +156,12 @@ name           = <any non-empty chars>
 ### Indentation rules
 
 - Each indentation level is exactly **2 spaces**.
-- Only recipe references may have children.
+- Only recipe references may be indented (nested).
 - Children must be indented exactly one level deeper than their parent.
-- An ingredient at the top level (indent 0) is a free-hand item not associated
-  with any recipe.
+- Multiple levels of nesting are supported — a menu can contain recipes, which
+  can contain sub-recipes (e.g. a meal plan → a burrito recipe → guacamole).
+- Plain ingredients only appear at the top level (indent 0) as free-hand items
+  not associated with any recipe.
 
 ### Check semantics
 
@@ -244,6 +253,41 @@ Mobile apps should allow users to:
 5. Check off items while shopping (appending to `.shopping-checked`)
 6. Display checked state by replaying the check log
 7. Compact the check file periodically or on user action
+
+## Edge cases
+
+### Case-insensitive matching
+
+Ingredient names in the check file are matched against the shopping list
+**case-insensitively**. `+ Salt`, `+ salt`, and `+ SALT` all refer to the same
+ingredient.
+
+### Global check semantics
+
+A check entry applies to the ingredient **everywhere** it appears in the
+shopping list, regardless of which recipe it belongs to. If `butter` appears
+under both `./Pancakes` and `./Cookies`, then `+ butter` checks it off as a
+single item to buy.
+
+### Whitespace normalization
+
+Leading and trailing whitespace is trimmed from ingredient names in both files
+before matching. The check entry prefix is always exactly `+` or `-` followed by
+a single space.
+
+### Line endings
+
+Parsers must accept both `\n` (Unix) and `\r\n` (Windows) as line terminators.
+Serializers should write the platform default.
+
+### Missing files
+
+- `.shopping-list` without `.shopping-checked` — everything is unchecked.
+- `.shopping-checked` without `.shopping-list` — the check file has no effect.
+  Compaction would produce an empty file.
+- An empty `.shopping-checked` file is equivalent to a missing one.
+
+The `.shopping-list` is always the source of truth.
 
 ## Alternatives considered
 
