@@ -50,7 +50,7 @@ When you reference another recipe with `@./path/to/recipe{quantity}`, the quanti
 
 1. **No units** — scales the whole recipe by the given factor. `@./bread{2}` makes double the recipe.
 2. **Servings** — reads the referenced recipe's `servings` metadata and calculates a scaling factor to match. `@./pasta carbonara{4%servings}` for a recipe written for 2 servings will double all quantities.
-3. **Units** — reads the referenced recipe's `yield` metadata and calculates a scaling factor based on that. Only matching units are supported. For example, if a sauce recipe has `yield: 500%ml`, then `@./sauces/hollandaise{150%ml}` scales it down to produce 150 ml.
+3. **Units** (experimental) — reads the referenced recipe's `yield` metadata and calculates a scaling factor based on that. Only matching units are supported. For example, if a sauce recipe has `yield: 500%ml`, then `@./sauces/hollandaise{150%ml}` scales it down to produce 150 ml.
 
 ## Adding Pictures
 You can add images to your recipe by including a supported image file (`.png`,`.jpg`) matching the name of the recipe in the same directory.
