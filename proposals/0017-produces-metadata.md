@@ -117,11 +117,6 @@ When a recipe reference includes a unit (e.g., `@./recipe{150%ml}`):
 4. Apply the factor to all scalable ingredients
 
 If `produces` is absent or no unit matches, it is an error.
-
-### Precedence
-
-When a reference has a unit that could match either `produces` or `servings` (e.g. a contrived `servings: 4%ml`), `produces` takes precedence for non-`servings` units. The `servings` pseudo-unit is always resolved against the `servings`/`serves`/`yield` key.
-
 ## Effect on applications which use Cooklang
 
 ### Conventions updates
