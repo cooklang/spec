@@ -4,10 +4,12 @@ There are things which aren't part of the language specification but rather comm
 
 ## File Types
 
-The Cooklang ecosystem uses two file types:
+The Cooklang ecosystem uses the following file types:
 
 - **`.cook` files** — recipes written as plain-text instructions with Cooklang markup.
 - **`.menu` files** — meal plans that reference recipes. A `.menu` file is a valid Cooklang file that uses sections for days and recipe references to compose a plan.
+- **`.shopping-list`** — a shopping list definition combining recipe references and free-hand ingredients. Hidden file (one per directory).
+- **`.shopping-checked`** — an append-only log tracking which ingredients have been checked off. Hidden companion to `.shopping-list`.
 
 ### Menu Files
 
@@ -89,6 +91,54 @@ To use your recipes across different apps, follow the conventions on how to name
 | `introduction`, `description`|Additional notes about the recipe.|`This recipe is a traditional Uzbek dish that is made with a variety of vegetables and meat.`|
 
 ## Shopping Lists
+
+### Shopping list format
+
+A shopping list is a pair of hidden files in a directory:
+
+- **`.shopping-list`** — the list definition (recipe references and free-hand ingredients)
+- **`.shopping-checked`** — an append-only log of checked/unchecked ingredients
+
+On Unix-like systems these files are hidden by convention (dot-prefix). On Windows, applications should set the hidden file attribute.
+
+#### List definition
+
+The `.shopping-list` file is line-oriented. Recipe references start with `./` and support an optional multiplier in braces. Free-hand ingredients appear at the top level with an optional quantity. Comments use `--` (line/inline) and `[- -]` (block), consistent with Cooklang recipe syntax.
+
+Only recipe references may be nested (indented with 2 spaces per level). Plain ingredients are always top-level. Multiple levels of nesting are supported — a menu can contain recipes, which can contain sub-recipes.
+
+```
+./Plans/3 Day Plan I
+  ./Breakfast/Mexican Style Burrito{2}
+    ./Components/Guacamole{2}
+    ./Components/Beans{2}
+  ./Salads/Boring{2}
+  ./Slowcooker/Slow-cooker beef stew{0.5}
+olive oil{4%l}
+salt
+-- remember to check the pantry
+```
+
+#### Check file
+
+The `.shopping-checked` file tracks which ingredients have been acquired. Each line is `+ name` (checked) or `- name` (unchecked). The last entry for a given ingredient wins.
+
+```
++ salt
++ avocados
++ olive oil
+- avocados
++ avocados
+```
+
+Matching is **case-insensitive** and applies **globally** — `+ butter` checks off butter regardless of which recipe it belongs to.
+
+#### Compaction
+
+Applications can compact the check file by replaying the log, reconciling against the current `.shopping-list` (dropping stale entries), and rewriting with only `+ name` lines for checked ingredients. Compaction is idempotent.
+
+### Ingredient grouping
+
 To support the creation of shopping lists by apps and the command line tool, Cooklang includes a specification for a configuration file to define how ingredients should be grouped on the final shopping list.
 You can use `[]` to define a category name. These names are arbitrary, so you can customize them to meet your needs. For example, each category could be an aisle or section of the store, such as `[produce]` and `[deli]`.
 
