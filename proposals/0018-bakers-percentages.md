@@ -10,7 +10,7 @@
 I propose adding support for **named ingredient bases** (basises?), allowing authors to
 declare a pool of ingredients (e.g. `flour`) with a fixed total, and express
 ingredient quantities as percentages of that pool; this approach is used
-heavily in baking and fermentation, and is commonly known as **baker's
+heavily in baking and fermentation and is commonly known as **baker's
 percentages**.
 
 Discussion thread: [TBD](https://github.com/cooklang/spec/discussions).
@@ -21,12 +21,9 @@ I've spent the past few years on-and-off trying to build applications to
 represent baking recipes ([breadlikewatercolor.com](https://breadlikewatercolor.com/about), and an [interactive recipe builder](https://blwc-xi.vercel.app/)), but I've always wished they fit into a broader recipe
 ecosystem. I wanted to see if Cooklang could be extended to support this use
 case, as it doesn't have a way to express this approach to recipe building as
-far as I could tell, but with a small addition, it could!
+far as I could tell, but with a small addition it could!
 
-Baker's percentages are the standard notation for bread formulas. `75%flour`
-for water means 75% hydration regardless of batch size — the ratio is the
-recipe. Scaling to a different batch size means changing one number (`total`),
-and all ingredient quantities update automatically.
+Baker's percentages are the standard notation for bread formulas. `75% water` water means the water should be 75% of the weight of all the flour in the recipe, regardless of batch size: the ratio _is_ the formula in this sense. Scaling to a different batch size means changing one number: the basis total, and all ingredient quantities can be automatically computed.
 
 I came across some related prior discussions in preparing this proposal:
 [#53](https://github.com/cooklang/spec/discussions/53),
