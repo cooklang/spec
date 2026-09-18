@@ -2,7 +2,7 @@
 
 * Proposal: [0016-shopping-list-format](0016-shopping-list-format.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Awaiting review**
+* Status: **Accepted, in implementation**
 
 ## Introduction
 
