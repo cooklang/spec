@@ -1,14 +1,14 @@
-# Produces metadata for unit-based scaling
+# Yield metadata for unit-based scaling
 
-* Proposal: [0017-produces-metadata](0017-produces-metadata.md)
+* Proposal: [0017-yield-metadata](0017-yield-metadata.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Draft**
+* Status: **Awaiting review**
 
 ## Introduction
 
-This proposal introduces a new canonical metadata key `produces` (with synonyms `output` and `makes`) to declare what a recipe produces in measurable units. This resolves a conflict where `yield` serves as both a synonym for `servings` and the key for unit-based scaling.
+This proposal clarifies the canonical metadata keys for recipe output by separating two concepts that have been conflated: how many people a recipe feeds (`servings`/`serves`) and what measurable quantity a recipe produces (`yield`). `yield` is repurposed exclusively for unit-based output, and is removed as a synonym for `servings`.
 
-Discussion thread: TBD
+Discussion thread: [Proposal 0017: yield metadata for unit-based scaling](https://github.com/cooklang/spec/pull/146)
 
 ## Motivation
 
@@ -17,27 +17,30 @@ The canonical metadata table (proposal 0007) lists `yield` as a synonym for `ser
 These are fundamentally different concepts:
 
 - **Servings** answers "how many people does this feed?" — e.g. `servings: 4`
-- **Produces** answers "how much does this make?" — e.g. `produces: 500%ml`
+- **Yield** answers "how much does this make?" — e.g. `yield: 500%ml`
 
-A sauce recipe might feed 4 people *and* produce 500ml. With `yield` overloaded for both meanings, a recipe can't express both, and parsers can't reliably distinguish intent. Separating these into distinct keys resolves the ambiguity.
+A sauce recipe might feed 4 people *and* produce 500ml. With `yield` overloaded for both meanings, a recipe can't express both, and parsers can't reliably distinguish intent.
+
+The natural English usage aligns with this split: one says "serves 4" or "makes 8 servings" for people, and "yields 500ml" for measurable quantity — matching the [dictionary definition](https://www.merriam-webster.com/dictionary/yield) of yield. Keeping two key groups (`servings`/`serves` for people, `yield` for quantity) is simpler and less ambiguous than introducing a third term.
 
 ## Proposed solution
 
-Add a new canonical metadata key group for declaring recipe output in measurable units:
+Split the existing `servings`/`serves`/`yield` metadata row into two distinct key groups:
 
 | Key | Purpose | Example value |
 | --- | --- | --- |
-| `produces`, `output`, `makes` | What the recipe produces in measurable units. Used for unit-based scaling of referenced recipes. Supports a single value or a list. | `500%ml`, `[500%ml, 350%g]` |
+| `servings`, `serves` | How many people the recipe feeds. | `4` |
+| `yield` | What the recipe produces in measurable units. Used for unit-based scaling of referenced recipes. Supports a single value or a list. | `500%ml`, `[500%ml, 350%g]` |
 
-The existing `servings`/`serves`/`yield` row remains unchanged — `yield` stays a valid synonym for servings.
+`yield` is removed as a synonym for `servings`. See [Alternatives considered](#alternatives-considered) for the migration rationale.
 
 ### Single output
 
-A recipe declares what it produces:
+A recipe declares what it yields:
 
 ```cooklang
 ---
-produces: 500%ml
+yield: 500%ml
 ---
 
 Melt @butter{100%g} in a #saucepan{} over low heat.
@@ -53,7 +56,7 @@ A recipe can declare multiple output measurements. This is useful when the same 
 
 ```cooklang
 ---
-produces:
+yield:
   - 500%ml
   - 350%g
 ---
@@ -66,40 +69,40 @@ Gradually add @milk{500%ml}, stirring constantly.
 - `@./sauces/bechamel{200%ml}` matches the `500%ml` entry, scaling factor `0.4`
 - `@./sauces/bechamel{175%g}` matches the `350%g` entry, scaling factor `0.5`
 
-When a reference's unit doesn't match any entry in `produces`, it is an error.
+When a reference's unit doesn't match any entry in `yield`, it is an error.
 
 ### Interaction with servings
 
-`produces` and `servings` are independent and can coexist:
+`yield` and `servings` are independent and can coexist:
 
 ```cooklang
 ---
 servings: 4
-produces: 500%ml
+yield: 500%ml
 ---
 ```
 
 - `@./sauces/bechamel{6%servings}` scales by servings (factor `1.5`)
-- `@./sauces/bechamel{200%ml}` scales by output (factor `0.4`)
+- `@./sauces/bechamel{200%ml}` scales by yield (factor `0.4`)
 - `@./sauces/bechamel{2}` scales by the plain numeric factor (`2`)
 
 ## Detailed design
 
 ### Metadata key syntax
 
-The `produces` key follows standard YAML front matter syntax. Synonyms `output` and `makes` are treated identically.
+The `yield` key follows standard YAML front matter syntax.
 
 Single value:
 ```yaml
 ---
-produces: 500%ml
+yield: 500%ml
 ---
 ```
 
 List value:
 ```yaml
 ---
-produces:
+yield:
   - 500%ml
   - 350%g
 ---
@@ -111,46 +114,58 @@ The value format is `number%unit`, consistent with how quantities are expressed 
 
 When a recipe reference includes a unit (e.g., `@./recipe{150%ml}`):
 
-1. Look up the referenced recipe's `produces` metadata (or its synonyms `output`/`makes`)
+1. Look up the referenced recipe's `yield` metadata
 2. Find the entry whose unit matches the reference's unit (case-insensitive)
-3. Calculate the scaling factor: `requested_quantity / produces_quantity`
+3. Calculate the scaling factor: `requested_quantity / yield_quantity`
 4. Apply the factor to all scalable ingredients
 
-If `produces` is absent or no unit matches, it is an error.
+If `yield` is absent or no unit matches, it is an error.
+
+### Migration
+
+`yield` was previously listed as a synonym for `servings`. Any recipe using `yield: 4` (a plain number) to mean "serves 4" should be updated to `servings: 4` or `serves: 4`.
+
+Parsers can distinguish the old and new meanings by value shape:
+- `yield: 4` — plain number, old servings usage; should be migrated
+- `yield: 500%ml` — `number%unit`, new output usage
+
+Implementations may emit a warning when encountering plain-number `yield` values during a transition period.
+
 ## Effect on applications which use Cooklang
 
 ### Conventions updates
 
-1. Add `produces`/`output`/`makes` to the canonical metadata table
-2. Update the "Scaling Referenced Recipes" section (item 3, Units) to reference `produces` instead of `yield`
+1. Split the canonical metadata row: `servings`/`serves` (remove `yield`), and add a new row for `yield` as measurable output
+2. Keep the "Scaling Referenced Recipes" section (item 3, Units) referencing `yield`, now with a single unambiguous meaning
 
 ### CookCLI (terminal and web-server)
 
 CookCLI should:
-1. Recognise `produces`/`output`/`makes` metadata keys
-2. Display recipe output information in recipe read output
-3. Use `produces` for unit-based scaling in recipe read and shopping list generation
+1. Treat `yield` as measurable output (not a servings synonym)
+2. Display yield information in recipe read output
+3. Use `yield` for unit-based scaling in recipe read and shopping list generation
+4. Optionally warn when a recipe uses `yield` with a plain number value (old usage)
 
 ### Mobile applications
 
 Mobile apps should:
-1. Display `produces` metadata in recipe detail views
-2. Use `produces` for unit-based scaling calculations
+1. Display `yield` metadata in recipe detail views alongside `servings`
+2. Use `yield` for unit-based scaling calculations
 
 ## Alternatives considered
+
+### Introduce a new key (`produces`/`output`/`makes`) and keep `yield` as a servings synonym
+
+An earlier draft of this proposal added `produces` (with synonyms `output` and `makes`) for measurable output and left `yield` as a servings synonym. This was rejected because it expanded the canonical metadata surface with a third concept ("produces") whose meaning overlaps with both existing keys, and left `yield` ambiguous. Reviewers pointed out that natural English already maps cleanly to two groups: "serves/servings" for people and "yield" for quantity produced. Reusing `yield` with a single, precise meaning is simpler.
 
 ### Move unit-based output out of metadata entirely
 
 Instead of a metadata key, use a special syntax line in the recipe body (e.g., `= yield: 500%ml`). This was rejected because the information is declarative metadata about the recipe, not a step instruction. YAML front matter is the right place for it.
 
-### Deprecate or remove `yield` as a servings synonym
+### Keep `yield` as a synonym for servings
 
-This would break existing recipes that use `yield: 4` to mean "serves 4 people." Since `yield` is a common term in recipe formats, keeping it as a servings synonym avoids unnecessary migration and remains intuitive. A future proposal can revisit this if the community prefers.
-
-### Repurpose `yield` exclusively for unit-based output
-
-This was considered but rejected because it would be a breaking change for recipes already using `yield` to mean servings, and the word "yield" is ambiguous on its own — it could mean either concept.
+This preserves backward compatibility for recipes using `yield: 4` to mean "serves 4." It was rejected because it leaves the core ambiguity unresolved: a parser cannot tell whether `yield` refers to people or to measurable output without inspecting the value's shape, and authors cannot express both concepts on the same recipe without one of the keys taking on a new name. The migration cost is small — `yield: 4` becomes `servings: 4` — and implementations can warn during a transition period.
 
 ## Acknowledgments
 
-Thanks to the Cooklang community for feedback on unit-based scaling and the discussions that identified this conflict.
+Thanks to the Cooklang community for feedback on unit-based scaling, and to @tmlmt for pointing out that `yield` already has a precise English meaning that resolves the ambiguity without adding a new key.
