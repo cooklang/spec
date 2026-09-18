@@ -141,39 +141,57 @@ An optional recipe reference, `@?./sauces/chimichurri{}`, marks the whole refere
 
 ### Shopping list format
 
-Optional ingredients are opt-in on a shopping list. This proposal extends the [shopping list format](0016-shopping-list-format.md) with a **selection line** that records each optional ingredient the user accepted:
+Optional ingredients are opt-in on a shopping list. This proposal extends the [shopping list format](0016-shopping-list-format.md) with a **selection line** that records each optional ingredient the user accepted, together with the amount to buy:
 
 ```
 ./Breakfast/Eggs on toast{2}
-  ? chives
+  ? chilli flakes{2%pinch}
   ./Components/Salsa{2}
 ./Salads/Boring{2}
 olive oil{4%l}
 ```
 
-Taking Eggs on toast to be the recipe from the [example above](#proposed-solution), this reads as: "Eggs on toast ×2, including its optional chives, with Salsa ×2; Boring salad ×2; plus 4 l of olive oil." The optional chilli flakes of Eggs on toast, and any optional ingredients of Salsa and Boring salad, are not on the list.
+Taking Eggs on toast to be the recipe from the [example above](#proposed-solution), this reads as: "Eggs on toast ×2, including 2 pinches of its optional chilli flakes, with Salsa ×2; Boring salad ×2; plus 4 l of olive oil." The optional chives of Eggs on toast, and any optional ingredients of Salsa and Boring salad, are not on the list.
 
-One line form is added to the `.shopping-list` grammar:
+New line forms in the `.shopping-list` grammar:
 
 | Line form | Meaning |
 |---|---|
-| `? name` | Accepted optional ingredient of the parent recipe (indented only) |
+| `? name{quantity%unit}` | Accepted optional ingredient of the parent recipe, with the amount to buy (indented only) |
+| `? name{quantity}` | Same, quantity without unit |
+| `? name` | Same, no quantity |
+| `? ./path{multiplier}` | Accepted optional recipe reference of the parent recipe (indented only) |
 
 ```
 line           = blank | comment | top_level_item | indented_ref | selection
-selection      = INDENT "?" " " name NL
+selection      = INDENT "?" " " (ingredient | recipe_ref) NL
 ```
+
+`ingredient` and `recipe_ref` are the existing productions of proposal 0016.
 
 Rules:
 
 1. A recipe reference on its own contributes only the **required** ingredients of that recipe. Each selection line beneath it adds one optional ingredient, which the list must show marked as optional.
 2. A selection line belongs to the recipe reference one indentation level above it, following the existing indentation rules. It may appear under a reference at any nesting level. The prefix is exactly `?` followed by a single space, mirroring the check file's `+ name` / `- name` entries.
-3. `name` is the ingredient name only — no quantity, no braces. The quantity is derived from the recipe: the aggregated optional amount of that ingredient (see [Aggregation](#aggregation)), scaled by the reference's multiplier. Required amounts of the same ingredient are contributed regardless.
-4. Names are matched against the recipe's optional ingredients case-insensitively, with leading and trailing whitespace trimmed, as for the check file.
-5. A selection line whose name matches no optional ingredient of the parent recipe (for example because the recipe was edited) contributes nothing. Applications may warn about it or drop it when rewriting the file. Duplicate selection lines are equivalent to one.
-6. To accept an optional recipe reference such as `@?./sauces/chimichurri{}`, the name is the path as written in the recipe: `? ./sauces/chimichurri`. An accepted optional reference is expanded like a nested recipe reference, and selection lines for its own optional ingredients may be indented beneath it.
-7. Selection lines are only recognised when indented. Top-level free-hand items were added explicitly by the user and have no notion of optionality.
-8. Serializers write selection lines directly after their parent reference, before any nested recipe references, with 2 spaces of indentation per level.
+3. The quantity is the **final amount to buy**. The application writing the line computes it from the recipe — the aggregated optional amount of that ingredient (see [Aggregation](#aggregation)) with the reference's scaling already applied — and readers use it exactly as written, like a free-hand item. Readers must not multiply it by the parent's multiplier. In the example the recipe calls for 1 pinch and the reference is `{2}`, so the line says `{2%pinch}`. Braces are omitted when the ingredient has no quantity.
+4. A selection line is self-contained: totals for optional ingredients are computed from the selection lines alone, without looking the ingredient up in the recipe. Required amounts of the same ingredient still come from expanding the recipe reference, and stay separate from the optional amount.
+5. A recipe may use the same optional ingredient more than once — `@?parmesan{50%g}` on top and `@?parmesan{20%g}` to garnish. Because the line carries the amount, the user can accept all of those occurrences or only some of them. Several selection lines with the same name under one reference are allowed, and **each contributes its amount**; readers sum them subject to the usual unit compatibility. A writer may merge accepted occurrences with compatible units into one line or write one line per occurrence — the result is the same:
+
+   ```
+   ./Mains/Risotto
+     ? parmesan{70%g}          -- both occurrences accepted, merged
+   ```
+
+   ```
+   ./Mains/Risotto
+     ? parmesan{50%g}          -- only the topping accepted
+   ```
+
+   When accepted occurrences cannot be summed into one quantity (e.g. `1%pinch` and `5%g`), the writer emits one selection line per quantity.
+6. Because the quantity is a snapshot, an application that changes a reference's multiplier must rewrite the selection lines beneath it. Applications that have the recipe available may refresh selection lines whose recipe has changed, and may drop lines whose name no longer matches an optional ingredient of the parent recipe. A line that cannot be mapped back to specific occurrences unambiguously (for example after a partial acceptance) should be left as written. Names are compared case-insensitively with leading and trailing whitespace trimmed, as for the check file. Someone editing a multiplier by hand is responsible for adjusting the selection lines too.
+7. An optional recipe reference such as `@?./sauces/chimichurri{}` is accepted with its path as written in the recipe: `? ./sauces/chimichurri{2}`. The braces hold its multiplier, and the line otherwise behaves exactly like a nested recipe reference: it is expanded into its required ingredients, and selection lines for its own optional ingredients may be indented beneath it. Ingredients it contributes are shown as optional.
+8. Selection lines are only recognised when indented. Top-level free-hand items were added explicitly by the user and have no notion of optionality.
+9. Serializers write selection lines directly after their parent reference, before any nested recipe references, with 2 spaces of indentation per level, and format quantities as for free-hand ingredients.
 
 The check file is unchanged. Its entries are global by name, so `+ parmesan` checks off both the required and the optional parmesan entries.
 
@@ -202,7 +220,7 @@ Applications should visibly distinguish optional components wherever components 
 
 ### Shopping lists
 
-1. When a recipe with optional ingredients is added to a shopping list, applications should ask the user which of them to include, and record each accepted one as a [selection line](#shopping-list-format). Applications that cannot ask add the required ingredients only.
+1. When a recipe with optional ingredients is added to a shopping list, applications should ask the user which of them to include, and record each accepted one as a [selection line](#shopping-list-format) with its scaled amount. When an optional ingredient is used more than once, the choice may be offered per ingredient (all occurrences together) or per occurrence. Applications that cannot ask add the required ingredients only. When the user changes a recipe's multiplier, the application rewrites the amounts on its selection lines.
 2. Optional ingredients that are on the shopping list must be marked as optional, so the shopper knows they can be skipped if unavailable.
 3. Applications should make optional ingredients that were not accepted discoverable — for example as suggestions under the recipe — so they can be added later and are not simply forgotten.
 4. Following the aggregation rule, optional and required amounts of the same ingredient stay distinguishable within a recipe. When combining across recipes, applications should still keep optional amounts distinguishable from required ones.
@@ -263,6 +281,10 @@ A single marker on the recipe reference ("with optional ingredients" / "without"
 ### Record the choice outside the shopping list file
 
 The selection could be kept in application state or in a separate file next to `.shopping-checked`. That would leave the 0016 format untouched, but the list would no longer be self-contained: sharing or syncing `.shopping-list` would lose the user's choices.
+
+### Selection lines without a quantity, or with an unscaled quantity
+
+A selection line could carry only the name (`? chives`), with the amount derived from the recipe whenever the list is expanded, or carry the recipe's base amount for readers to multiply. Both keep the amount in step with the multiplier automatically, but they make every reader do more work: look up and aggregate the optional occurrences in the recipe, or apply scaling — which a plain multiplication gets wrong for fixed and text quantities. A name-only line also cannot express accepting just one of several optional uses of the same ingredient. Storing the final amount makes totals a simple sum, at the cost of rewriting the lines when the multiplier changes.
 
 ### Optional steps and sections
 
