@@ -108,7 +108,7 @@ On Unix-like systems these files are hidden by convention (dot-prefix). On Windo
 
 The `.shopping-list` file is line-oriented. Recipe references start with `./` and support an optional multiplier in braces. Free-hand ingredients appear at the top level with an optional quantity. Comments use `--` (line/inline) and `[- -]` (block), consistent with Cooklang recipe syntax.
 
-Only recipe references may be nested (indented with 2 spaces per level). Plain ingredients are always top-level. Multiple levels of nesting are supported — a menu can contain recipes, which can contain sub-recipes.
+Only recipe references and [selection lines](#optional-ingredients) may be nested (indented with 2 spaces per level). Plain ingredients are always top-level. Multiple levels of nesting are supported — a menu can contain recipes, which can contain sub-recipes.
 
 ```
 ./Plans/3 Day Plan I
@@ -122,6 +122,35 @@ salt
 -- remember to check the pantry
 ```
 
+#### Optional ingredients
+
+A recipe reference on its own contributes only the **required** ingredients of that recipe. [Optional ingredients](README.md#optional-ingredients-and-cookware) are opt-in: each one the user accepted is recorded as a **selection line** beneath its recipe reference — `?`, a single space, and the ingredient with the amount to buy:
+
+```
+./Breakfast/Eggs on toast{2}
+  ? chilli flakes{2%pinch}
+  ./Components/Salsa{2}
+./Salads/Boring{2}
+olive oil{4%l}
+```
+
+This reads as: "Eggs on toast ×2, including 2 pinches of its optional chilli flakes, with Salsa ×2; Boring salad ×2; plus 4 l of olive oil." Any other optional ingredients of these recipes are not on the list.
+
+| Line form | Meaning |
+|---|---|
+| `? name{quantity%unit}` | Accepted optional ingredient of the parent recipe, with the amount to buy |
+| `? name{quantity}` | Same, quantity without unit |
+| `? name` | Same, no quantity |
+| `? ./path{multiplier}` | Accepted optional recipe reference of the parent recipe |
+
+- A selection line belongs to the recipe reference one indentation level above it, at any nesting level. Selection lines are only recognised when indented; top-level free-hand items have no notion of optionality.
+- The quantity is the **final amount to buy**: the writer computes it from the recipe (the aggregated optional amount, with the reference's scaling already applied), and readers use it as written, like a free-hand item. Readers must not multiply it by the parent's multiplier. Braces are omitted when the ingredient has no quantity.
+- Several selection lines with the same name under one reference are allowed, and each contributes its amount. This lets the user accept only some of the optional uses of an ingredient. A writer may merge accepted amounts with compatible units into one line or write one line per amount; amounts that cannot be summed (e.g. `1%pinch` and `5%g`) get one line each.
+- Because the quantity is a snapshot, an application that changes a reference's multiplier must rewrite the selection lines beneath it. Applications that have the recipe available may refresh selection lines whose recipe has changed, and may drop lines whose name no longer matches an optional ingredient of the recipe (names are compared case-insensitively, trimmed). Lines that cannot be mapped back to the recipe unambiguously should be left as written.
+- An accepted optional recipe reference, such as `@?./sauces/chimichurri{}`, is written with its path as in the recipe, `? ./sauces/chimichurri{2}`, where the braces hold its multiplier. It is expanded like any nested recipe reference, may have its own selection lines beneath it, and everything it contributes is optional.
+- Optional amounts stay separate from required amounts of the same ingredient, and applications must mark optional items on the list so the shopper knows they can be skipped.
+- Serializers write selection lines directly after their parent reference, before any nested recipe references, with 2 spaces of indentation per level, formatting quantities as for free-hand ingredients.
+
 #### Check file
 
 The `.shopping-checked` file tracks which ingredients have been acquired. Each line is `+ name` (checked) or `- name` (unchecked). The last entry for a given ingredient wins.
@@ -134,7 +163,7 @@ The `.shopping-checked` file tracks which ingredients have been acquired. Each l
 + avocados
 ```
 
-Matching is **case-insensitive** and applies **globally** — `+ butter` checks off butter regardless of which recipe it belongs to.
+Matching is **case-insensitive** and applies **globally** — `+ butter` checks off butter regardless of which recipe it belongs to, and whether it is required or optional.
 
 #### Compaction
 
@@ -228,6 +257,8 @@ pasta = { quantity = "1%kg", low = "200%g" }
 ```
 
 Applications can use this data to check ingredient availability, track expiration dates, and generate shopping lists based on what's running low.
+
+When matching recipes against the pantry ("what can I cook?"), a missing [optional ingredient](README.md#optional-ingredients-and-cookware) does not count as missing: a recipe whose only absent ingredients are optional is a full match.
 
 ## Scaling and Servings
 

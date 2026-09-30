@@ -14,12 +14,15 @@ note marker = ">" ;
 note = { note marker, { text item }, blank line }-, blank line ;
 
 ingredient           = one word ingredient | multiword ingredient ;
-one word ingredient  = "@", one word component ;
-multiword ingredient = "@", multiword component ;
+one word ingredient  = "@", [ optional marker ], one word component ;
+multiword ingredient = "@", [ optional marker ], multiword component ;
 
 cookware             = one word cookware | multiword cookware ;
-one word cookware    = "#", one word component ;
-multiword cookware   = "#", multiword component ;
+one word cookware    = "#", [ optional marker ], one word component ;
+multiword cookware   = "#", [ optional marker ], multiword component ;
+
+(* marks the ingredient or cookware as optional; not part of the name *)
+optional marker      = "?" ;
 
 timer                = no name timer | one word timer | multiword timer ;
 no name timer        = "~", no name component ;

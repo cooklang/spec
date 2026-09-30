@@ -1,4 +1,4 @@
-version: 7
+version: 8
 tests:
   testBasicDirection:
     source: |
@@ -830,6 +830,121 @@ tests:
           - type: text
             value: "Recipe # 5"
       metadata: {}
+
+  testOptionalIngredient:
+    source: |
+      Garnish with @?fresh thyme{2%sprigs}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Garnish with "
+          - type: ingredient
+            name: "fresh thyme"
+            quantity: 2
+            units: "sprigs"
+            optional: true
+      metadata: {}
+
+
+  testOptionalSingleWordIngredient:
+    source: |
+      Top with @?chives
+    result:
+      steps:
+        -
+          - type: text
+            value: "Top with "
+          - type: ingredient
+            name: "chives"
+            quantity: "some"
+            units: ""
+            optional: true
+      metadata: {}
+
+
+  testOptionalCookware:
+    source: |
+      Use a #?splatter guard{} if you have one
+    result:
+      steps:
+        -
+          - type: text
+            value: "Use a "
+          - type: cookware
+            name: "splatter guard"
+            quantity: 1
+            optional: true
+          - type: text
+            value: " if you have one"
+      metadata: {}
+
+
+  testOptionalAndRequiredSameIngredient:
+    source: |
+      Stir @parmesan{100%g} in, top with @?parmesan{50%g}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Stir "
+          - type: ingredient
+            name: "parmesan"
+            quantity: 100
+            units: "g"
+          - type: text
+            value: " in, top with "
+          - type: ingredient
+            name: "parmesan"
+            quantity: 50
+            units: "g"
+            optional: true
+      metadata: {}
+
+
+  testOptionalMarkerOnlyOnce:
+    source: |
+      Add @??thyme{}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add "
+          - type: ingredient
+            name: "?thyme"
+            quantity: "some"
+            units: ""
+            optional: true
+      metadata: {}
+
+
+  testOptionalMarkerFollowedBySpace:
+    source: |
+      Add @? thyme
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add @? thyme"
+      metadata: {}
+
+
+  testQuestionMarkAfterIngredient:
+    source: |
+      Did you add the @salt{}?
+    result:
+      steps:
+        -
+          - type: text
+            value: "Did you add the "
+          - type: ingredient
+            name: "salt"
+            quantity: "some"
+            units: ""
+          - type: text
+            value: "?"
+      metadata: {}
+
 
 # NOTE: Unicode newlines may be impossible to test using YAML, 
 # given how the markup uses them for semantic reasoning.
