@@ -14,6 +14,8 @@
    * [Notes](#notes)
    * [Sections](#sections)
    * [Short-hand preparations](#short-hand-preparations)
+   * [Referencing other recipes](#referencing-other-recipes)
+   * [Optional ingredients and cookware](#optional-ingredients-and-cookware)
 * [Projects Which Use Cooklang](#projects-which-use-cooklang)
 * [Syntax Highlighting](#syntax-highlighting)
 
@@ -159,6 +161,30 @@ Pour over with @./sauces/Hollandaise{150%g}.
 ```
 
 These preparations should be clearly displayed in the ingredient list, allowing you to get everything ready before you start cooking.
+
+### Optional ingredients and cookware
+
+To mark an ingredient or a piece of cookware as optional, put `?` straight after the `@` or `#`:
+
+```cooklang
+Season with @salt and @?chilli flakes{1%pinch}.
+
+Use a #?splatter guard{} if you have one.
+```
+
+The `?` is not part of the name. It works with every form of ingredient and cookware: single word (`@?chives`), multi-word (`@?chilli flakes{}`), with a quantity (`@?chilli flakes{1%pinch}`), and recipe references (`@?./sauces/chimichurri{}`). It must follow the sigil directly: `@? thyme` is plain text, and a `?` anywhere else, as in `Did you add the @salt{}?`, is ordinary text.
+
+Optionality belongs to each occurrence, not to the ingredient as a whole, so the same ingredient can be required in one step and optional in another. Required and optional amounts are listed separately instead of being added together:
+
+```cooklang
+Stir @parmesan{100%g} into the sauce.
+
+Top with extra @?parmesan{50%g} before serving.
+```
+
+This recipe needs `parmesan 100 g`, plus `parmesan 50 g` marked as optional. Optional components scale exactly like required ones.
+
+Applications should mark optional items wherever ingredients and cookware are listed, leave optional ingredients off a shopping list unless the user chooses them (see [shopping lists](conventions.md#optional-ingredients)), and not count a missing optional ingredient as missing when matching recipes against a pantry. An optional recipe reference makes every ingredient of the referenced recipe optional.
 
 ## Projects Which Use Cooklang
 * [Cooklang playground](https://cooklang.github.io/cooklang-rs/)

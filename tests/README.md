@@ -24,8 +24,8 @@ Key components:
 3. Result. Expected result of parsing. It consists of multiple steps and metadata.
 4. Direction item. Every step consists of multiple direction items. There're four types:
     * `text` has `value` which contains text used in step.
-    * `ingredient` has `name`, `quantity` and `units`.
-    * `cookware` has `name` and `quantity`.
+    * `ingredient` has `name`, `quantity` and `units`, and `optional: true` when marked with `?` (`optional` defaults to `false` and is omitted when false).
+    * `cookware` has `name` and `quantity`, and `optional` like ingredients.
     * `timer` has `name`, `quantity` and `units`.
 5. Metadata is in key/value form.
 

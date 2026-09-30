@@ -2,7 +2,7 @@
 
 * Proposal: [0018-optional-components](0018-optional-components.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Awaiting review**
+* Status: **Accepted, in implementation**
 
 ## Introduction
 
