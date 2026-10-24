@@ -33,7 +33,7 @@ The same recipe therefore scales in one tool and silently does not in another. T
 
 ## Proposed solution
 
-A quantity written as two numbers joined by a hyphen is a **range**:
+A quantity written as two numbers joined by a dash is a **range**:
 
 ```cooklang
 ---
@@ -70,7 +70,9 @@ The `quantity` production gains a `range` alternative. The specification has so 
 ```ebnf
 amount   = quantity | ( quantity, "%", units ) ;
 quantity = range | number | { text item - "%" - "}" }- ;
-range    = number, { white space }, "-", { white space }, number ;
+range    = number, { white space }, range separator, { white space }, number ;
+
+range separator = "-" | "–" | "—" ;  (* U+002D hyphen-minus, U+2013 en dash, U+2014 em dash *)
 
 number         = decimal | mixed number | fraction | integer ;
 integer        = "0" | non-zero digit, { digit } ;
@@ -84,11 +86,11 @@ non-zero digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 Rules:
 
 1. The alternatives of `quantity` are tried in the order written, against the whole quantity with surrounding whitespace trimmed. A quantity that matches `range` is a range even though it also matches the text alternative; otherwise it is a number if it matches `number`; otherwise it is text, exactly as today.
-2. Both ends must be numbers. `{2-}`, `{-3}`, `{2-few}` and `{1-2 handfuls}` are text, as they are today. A negative number is not a number in this grammar, so `-` can only ever mean a range.
-3. Exactly one hyphen separates the ends. `{1-2-3}` is text.
-4. Whitespace around the hyphen is allowed: `{2 - 3}` and `{2-3}` are the same range. Whitespace inside a number follows the existing rules for fractions and mixed numbers, so `{1 1/2-2%cups}` is the range 1½–2.
+2. Both ends must be numbers. `{2-}`, `{-3}`, `{2-few}` and `{1-2 handfuls}` are text, as they are today. A negative number is not a number in this grammar, so a dash between two numbers can only ever mean a range.
+3. Exactly one separator separates the ends. `{1-2-3}` is text.
+4. Whitespace around the separator is allowed: `{2 - 3}` and `{2-3}` are the same range. Whitespace inside a number follows the existing rules for fractions and mixed numbers, so `{1 1/2-2%cups}` is the range 1½–2.
 5. The units after `%` apply to both ends. There is no way to give the two ends different units.
-6. The separator is the ASCII hyphen-minus (U+002D). Typographic dashes such as `–` (U+2013) are text. Applications may render a range with an en dash or a localised word ("2 to 3"), but what is stored in the file is `-`.
+6. The separator is the ASCII hyphen-minus `-` (U+002D), the en dash `–` (U+2013) or the em dash `—` (U+2014). `{2-3}`, `{2–3}` and `{2—3}` are the same range. Websites, word processors and phone keyboards routinely turn a typed `2-3` into `2–3`, and text pasted from them should not silently become a text quantity. Other dash-like characters, such as the minus sign (U+2212), are text. Tools that write Cooklang (serialisers, formatters, importers) emit the ASCII hyphen; applications may render a range with an en dash or a localised word ("2 to 3").
 7. The ends are kept exactly as written. Parsers must not reorder them, and `{3-2}` is a valid range with start 3 and end 2; a parser may warn about it. `{2-2}` is a range with equal ends; applications may display it as the single number 2, but it stays a range in the parsed model and is written back as `2-2`.
 8. A fraction whose denominator is `0`, on its own or as either end of a range, is not a number. Parsers report an error, as cooklang-rs does today, and must not produce a numeric value for it.
 
@@ -215,7 +217,7 @@ testRangeThreeNumbersIsText:
           units: ""
     metadata: {}
 
-testRangeEnDashIsText:
+testIngredientRangeEnDash:
   source: |
     @eggs{2–3}
   result:
@@ -223,7 +225,9 @@ testRangeEnDashIsText:
       -
         - type: ingredient
           name: "eggs"
-          quantity: "2–3"
+          quantity:
+            start: 2
+            end: 3
           units: ""
     metadata: {}
 
@@ -296,7 +300,7 @@ When comparing a range requirement against stock ("what can I cook?"), applicati
 
 ### Backward compatibility
 
-Under the current specification `@garlic{2-3%cloves}` has the text quantity `2-3`. After this change it is the numeric range 2–3. Recipes that use this form already intend a range, so they gain scaling and aggregation and lose nothing. The only text whose meaning changes unintentionally is a quantity that happens to be two numbers joined by a hyphen but is not a range, such as a date or a product code in the quantity slot; these are not known to exist in practice. Quantities such as `1-2 handfuls`, `few`, `to taste` and negative numbers remain text. No migration is needed.
+Under the current specification `@garlic{2-3%cloves}` has the text quantity `2-3`, and `@garlic{2–3%cloves}` the text quantity `2–3`. After this change both are the numeric range 2–3. Recipes that use this form already intend a range, so they gain scaling and aggregation and lose nothing. The only text whose meaning changes unintentionally is a quantity that happens to be two numbers joined by a hyphen but is not a range, such as a date or a product code in the quantity slot; these are not known to exist in practice. Quantities such as `1-2 handfuls`, `few`, `to taste` and negative numbers remain text. No migration is needed.
 
 ## Effect on applications which use Cooklang
 
@@ -337,7 +341,7 @@ The web app should parse recipes with ranges enabled so that rendered recipes, s
 
 ### Parsers
 
-Parsers that implement this as an extension today (cooklang-rs) should make ranges part of the core syntax, available with all extensions disabled, and update their canonical test runner for the `start`/`end` mapping. Other parsers (cooklang-ts, cooklang-swift, cooklang-c, and others) need the grammar change and the new value kind.
+Parsers that implement this as an extension today (cooklang-rs) should make ranges part of the core syntax, available with all extensions disabled, accept the en and em dash as separators (cooklang-rs currently lexes them as punctuation, so `{2–3}` is text even with the extension on), and update their canonical test runner for the `start`/`end` mapping. Other parsers (cooklang-ts, cooklang-swift, cooklang-c, and others) need the grammar change and the new value kind.
 
 ## Alternatives considered
 
@@ -353,9 +357,9 @@ This is the status quo in half the ecosystem. It needs no parser change, but it 
 
 Expressions that mix a weight and a count, such as the `@chicken wings{700%g, 6-8}` suggested in the same discussion, come up as well. They are better served by alternative quantities than by ranges, and a range with one unit is what every existing recipe and parser uses.
 
-### Accept typographic dashes
+### ASCII hyphen only
 
-Allowing `–` (U+2013) and `—` (U+2014) as separators would be friendlier to text pasted from websites. It was rejected to keep the grammar ASCII, like the rest of Cooklang, and because no parser accepts them today; the AI importers and editors can normalise dashes before the text reaches a file.
+Accepting only `-` keeps the grammar ASCII, like the rest of Cooklang, and matches what cooklang-rs does today. It was rejected because en and em dashes are what websites, word processors and phone keyboards produce when someone types `2-3`, so `{2–3}` would silently stay a text quantity, which is the same class of bug this proposal exists to fix. Between two numbers inside braces a dash is unambiguous, so accepting the typographic forms costs nothing, and writers still emit the ASCII hyphen so files stay uniform.
 
 ### Require start ≤ end
 
