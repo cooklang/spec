@@ -258,6 +258,8 @@ The last test pins down a case the written-down `number` grammar makes explicit:
 
 A range scales by multiplying both ends by the scaling factor: `@garlic{2-3%cloves}` doubled is 4–6 cloves. The fixed-quantity lock applies to the whole range, so `@salt{=1-2%tsp}` stays 1–2 tsp at any serving size. Timers are not scaled, as today.
 
+Cookware quantities never carry units and do not scale under the [conventions](../conventions.md#what-doesnt-scale), so a cookware range such as `#ramekins{4-6}` is only displayed and aggregated.
+
 ### Aggregation
 
 When quantities of the same ingredient are added (ingredient lists, shopping lists), ranges add end-to-end and a plain number adds to both ends:
