@@ -1,4 +1,4 @@
-version: 5
+version: 8
 tests:
   testBasicDirection:
     source: |
@@ -21,7 +21,7 @@ tests:
 
   testCommentsAfterIngredients:
     source: |
-      @thyme{2%springs} -- testing comments
+      @thyme{2%sprigs} -- testing comments
       and some text
     result:
       steps:
@@ -29,26 +29,23 @@ tests:
           - type: ingredient
             name: "thyme"
             quantity: 2
-            units: "springs"
+            units: "sprigs"
           - type: text
-            value: " "
-        -
-          - type: text
-            value: "and some text"
+            value: "  and some text"          
       metadata: {}
 
 
   testCommentsWithIngredients:
     source: |
       -- testing comments
-      @thyme{2%springs}
+      @thyme{2%sprigs}
     result:
       steps:
         -
           - type: ingredient
             name: "thyme"
             quantity: 2
-            units: "springs"
+            units: "sprigs"
       metadata: {}
 
 
@@ -74,7 +71,7 @@ tests:
       metadata: {}
 
 
-  testDirectionWithIngrident:
+  testDirectionWithIngredient:
     source: |
       Add @chilli{3%items}, @ginger{10%g} and @milk{1%l}.
     result:
@@ -160,6 +157,7 @@ tests:
             value: " for some time"
       metadata: {}
 
+
   testEquipmentQuantity:
     source: |
       #frying pan{2}
@@ -170,6 +168,7 @@ tests:
             name: "frying pan"
             quantity: 2
       metadata: {}
+
 
   testEquipmentQuantityOneWord:
     source: |
@@ -182,6 +181,7 @@ tests:
             quantity: three
       metadata: {}
 
+
   testEquipmentQuantityMultipleWords:
     source: |
       #frying pan{two small}
@@ -192,6 +192,7 @@ tests:
             name: "frying pan"
             quantity: two small
       metadata: {}
+
 
   testFractions:
     source: |
@@ -225,7 +226,7 @@ tests:
         -
           - type: ingredient
             name: "milk"
-            quantity: 01/2
+            quantity: "01/2"
             units: "cup"
       metadata: {}
 
@@ -273,7 +274,7 @@ tests:
       metadata: {}
 
 
-  testIngridentExplicitUnits:
+  testIngredientExplicitUnits:
     source: |
       @chilli{3%items}
     result:
@@ -286,7 +287,7 @@ tests:
       metadata: {}
 
 
-  testIngridentExplicitUnitsWithSpaces:
+  testIngredientExplicitUnitsWithSpaces:
     source: |
       @chilli{ 3 % items }
     result:
@@ -299,7 +300,7 @@ tests:
       metadata: {}
 
 
-  testIngridentImplicitUnits:
+  testIngredientImplicitUnits:
     source: |
       @chilli{3}
     result:
@@ -312,7 +313,7 @@ tests:
       metadata: {}
 
 
-  testIngridentNoUnits:
+  testIngredientNoUnits:
     source: |
       @chilli
     result:
@@ -325,7 +326,7 @@ tests:
       metadata: {}
 
 
-  testIngridentNoUnitsNotOnlyString:
+  testIngredientNoUnitsNotOnlyString:
     source: |
       @5peppers
     result:
@@ -338,7 +339,7 @@ tests:
       metadata: {}
 
 
-  testIngridentWithNumbers:
+  testIngredientWithNumbers:
     source: |
       @tipo 00 flour{250%g}
     result:
@@ -351,7 +352,7 @@ tests:
       metadata: {}
 
 
-  testIngridentWithoutStopper:
+  testIngredientWithoutStopper:
     source: |
       @chilli cut into pieces
     result:
@@ -368,7 +369,9 @@ tests:
 
   testMetadata:
     source: |
-      >> sourced: babooshka
+      ---
+      sourced: babooshka
+      ---
     result:
       steps: []
       metadata:
@@ -377,18 +380,22 @@ tests:
 
   testMetadataBreak:
     source: |
-      hello >> sourced: babooshka
+      hello ---
+      sourced: babooshka
+      ---
     result:
       steps:
         -
           - type: text
-            value: "hello >> sourced: babooshka"
+            value: "hello --- sourced: babooshka ---"
       metadata: {}
 
 
   testMetadataMultiwordKey:
     source: |
-      >> cooking time: 30 mins
+      ---
+      cooking time: 30 mins
+      ---
     result:
       steps: []
       metadata:
@@ -397,7 +404,9 @@ tests:
 
   testMetadataMultiwordKeyWithSpaces:
     source: |
-      >>cooking time    :30 mins
+      ---
+      cooking time    :30 mins
+      ---
     result:
       steps: []
       metadata:
@@ -422,8 +431,10 @@ tests:
 
   testMultipleLines:
     source: |
-      >> Prep Time: 15 minutes
-      >> Cook Time: 30 minutes
+      ---
+      Prep Time: 15 minutes
+      Cook Time: 30 minutes
+      ---
     result:
       steps: []
       metadata:
@@ -431,7 +442,7 @@ tests:
         "Cook Time": 30 minutes
 
 
-  testMultiWordIngrident:
+  testMultiWordIngredient:
     source: |
       @hot chilli{3}
     result:
@@ -444,7 +455,7 @@ tests:
       metadata: {}
 
 
-  testMultiWordIngridentNoAmount:
+  testMultiWordIngredientNoAmount:
     source: |
       @hot chilli{}
     result:
@@ -457,7 +468,7 @@ tests:
       metadata: {}
 
 
-  testMutipleIngridentsWithoutStopper:
+  testMutipleIngredientsWithoutStopper:
     source: |
       @chilli cut into pieces and @garlic
     result:
@@ -478,14 +489,14 @@ tests:
 
   testQuantityAsText:
     source: |
-      @thyme{few%springs}
+      @thyme{few%sprigs}
     result:
       steps:
         -
           - type: ingredient
             name: "thyme"
             quantity: few
-            units: "springs"
+            units: "sprigs"
       metadata: {}
 
 
@@ -504,7 +515,9 @@ tests:
 
   testServings:
     source: |
-      >> servings: 1|2|3
+      ---
+      servings: 1|2|3
+      ---
     result:
       steps: []
       metadata:
@@ -566,7 +579,7 @@ tests:
             name: ""
       metadata: {}
 
-
+  
   testTimerWithName:
     source: |
       Fry for ~potato{42%minutes}
@@ -580,5 +593,360 @@ tests:
             units: "minutes"
             name: "potato"
       metadata: {}
+
+  
+  testSingleWordTimer:
+    source: |
+      Let it ~rest after plating
+    result:
+      steps:
+        -
+          - type: text
+            value: "Let it "
+          - type: timer
+            quantity: ""
+            units: ""
+            name: "rest"
+          - type: text
+            value: " after plating"
+      metadata: {}
+
+
+  testSingleWordTimerWithPunctuation:
+    source: |
+      Let it ~rest, then serve
+    result:
+      steps:
+        -
+          - type: text
+            value: "Let it "
+          - type: timer
+            quantity: ""
+            units: ""
+            name: "rest"
+          - type: text
+            value: ", then serve"
+      metadata: {}
+
+
+  testSingleWordTimerWithUnicodePunctuation:
+    source: |
+      Let it ~rest⸫ then serve
+    result:
+      steps:
+        -
+          - type: text
+            value: "Let it "
+          - type: timer
+            quantity: ""
+            units: ""
+            name: "rest"
+          - type: text
+            value: "⸫ then serve"
+      metadata: {}
+  
+  # NOTE: the space following `rest` is U+2009
+  testTimerWithUnicodeWhitespace:
+    source: |
+      Let it ~rest then serve
+    result:
+      steps:
+        -
+          - type: text
+            value: "Let it "
+          - type: timer
+            quantity: ""
+            units: ""
+            name: "rest"
+          - type: text
+            value: " then serve"
+      metadata: {}
+
+
+  testInvalidMultiWordTimer:
+    source: |
+      It is ~ {5}
+    result:
+      steps:
+        -
+          - type: text
+            value: "It is ~ {5}"
+      metadata: {}
+
+
+  testInvalidSingleWordTimer:
+    source: |
+      It is ~ 5
+    result:
+      steps:
+        -
+          - type: text
+            value: "It is ~ 5"
+      metadata: {}
+
+
+  testSingleWordIngredientWithPunctuation:
+    source: |
+      Add some @chilli, then serve
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add some "
+          - type: ingredient
+            quantity: "some"
+            units: ""
+            name: "chilli"
+          - type: text
+            value: ", then serve"
+      metadata: {}
+
+
+  testSingleWordIngredientWithUnicodePunctuation:
+    source: |
+      Add @chilli⸫ then bake
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add "
+          - type: ingredient
+            quantity: "some"
+            units: ""
+            name: "chilli"
+          - type: text
+            value: "⸫ then bake"
+      metadata: {}
+
+  
+  # NOTE: the space following `chilli` is U+2009
+  testIngredientWithUnicodeWhitespace:
+    source: |
+      Add @chilli then bake
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add "
+          - type: ingredient
+            quantity: "some"
+            units: ""
+            name: "chilli"
+          - type: text
+            value: " then bake"
+      metadata: {}
+
+
+  testInvalidMultiWordIngredient:
+    source: |
+      Message @ example{}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Message @ example{}"
+      metadata: {}
+
+
+  testInvalidSingleWordIngredient:
+    source: |
+      Message me @ example
+    result:
+      steps:
+        -
+          - type: text
+            value: "Message me @ example"
+      metadata: {}
+
+
+  testSingleWordCookwareWithPunctuation:
+    source: |
+      Place in #pot, then boil
+    result:
+      steps:
+        -
+          - type: text
+            value: "Place in "
+          - type: cookware
+            quantity: 1
+            units: ""
+            name: "pot"
+          - type: text
+            value: ", then boil"
+      metadata: {}
+
+  testSingleWordCookwareWithUnicodePunctuation:
+    source: |
+      Place in #pot⸫ then boil
+    result:
+      steps:
+        -
+          - type: text
+            value: "Place in "
+          - type: cookware
+            quantity: 1
+            units: ""
+            name: "pot"
+          - type: text
+            value: "⸫ then boil"
+      metadata: {}
+
+  
+  # NOTE: the space following `pot` is U+2009
+  testCookwareWithUnicodeWhitespace:
+    source: |
+      Add to #pot then boil
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add to "
+          - type: cookware
+            quantity: 1
+            units: ""
+            name: "pot"
+          - type: text
+            value: " then boil"
+      metadata: {}
+
+
+  testInvalidMultiWordCookware:
+    source: |
+      Recipe # 10{}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Recipe # 10{}"
+      metadata: {}
+
+
+  testInvalidSingleWordCookware:
+    source: |
+      Recipe # 5
+    result:
+      steps:
+        -
+          - type: text
+            value: "Recipe # 5"
+      metadata: {}
+
+  testOptionalIngredient:
+    source: |
+      Garnish with @?fresh thyme{2%sprigs}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Garnish with "
+          - type: ingredient
+            name: "fresh thyme"
+            quantity: 2
+            units: "sprigs"
+            optional: true
+      metadata: {}
+
+
+  testOptionalSingleWordIngredient:
+    source: |
+      Top with @?chives
+    result:
+      steps:
+        -
+          - type: text
+            value: "Top with "
+          - type: ingredient
+            name: "chives"
+            quantity: "some"
+            units: ""
+            optional: true
+      metadata: {}
+
+
+  testOptionalCookware:
+    source: |
+      Use a #?splatter guard{} if you have one
+    result:
+      steps:
+        -
+          - type: text
+            value: "Use a "
+          - type: cookware
+            name: "splatter guard"
+            quantity: 1
+            optional: true
+          - type: text
+            value: " if you have one"
+      metadata: {}
+
+
+  testOptionalAndRequiredSameIngredient:
+    source: |
+      Stir @parmesan{100%g} in, top with @?parmesan{50%g}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Stir "
+          - type: ingredient
+            name: "parmesan"
+            quantity: 100
+            units: "g"
+          - type: text
+            value: " in, top with "
+          - type: ingredient
+            name: "parmesan"
+            quantity: 50
+            units: "g"
+            optional: true
+      metadata: {}
+
+
+  testOptionalMarkerOnlyOnce:
+    source: |
+      Add @??thyme{}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add "
+          - type: ingredient
+            name: "?thyme"
+            quantity: "some"
+            units: ""
+            optional: true
+      metadata: {}
+
+
+  testOptionalMarkerFollowedBySpace:
+    source: |
+      Add @? thyme
+    result:
+      steps:
+        -
+          - type: text
+            value: "Add @? thyme"
+      metadata: {}
+
+
+  testQuestionMarkAfterIngredient:
+    source: |
+      Did you add the @salt{}?
+    result:
+      steps:
+        -
+          - type: text
+            value: "Did you add the "
+          - type: ingredient
+            name: "salt"
+            quantity: "some"
+            units: ""
+          - type: text
+            value: "?"
+      metadata: {}
+
+
+# NOTE: Unicode newlines may be impossible to test using YAML, 
+# given how the markup uses them for semantic reasoning.
 
 # TODO add common syntax errors
