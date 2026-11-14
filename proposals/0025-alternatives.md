@@ -116,7 +116,7 @@ An option takes one of four forms:
 
 Rules:
 
-1. **Where `|` counts.** Only between two options: after a complete option and before `@`, `#`, `{` or `(`. Spaces, and one line break inside a step, are allowed on either side: `@parsley{} | @mint{}`. Anywhere else a `|` is text, as in `180C|355F`. A pipe inside the braces of a component is not touched.
+1. **Where `|` counts.** Only between two options: after a complete option and before `@`, `#`, `{` or `(`, or between two timers. Spaces, and one line break inside a step, are allowed on either side: `@parsley{} | @mint{}`. Anywhere else a `|` is text, as in `180C|355F`. A pipe inside the braces of a component is not touched.
 2. **The sigil is repeated** on every option that has a name: `@butter{}|@ghee{}`, not `@butter{}|ghee{}`. Each option is then a complete component, so a parser that knows nothing of this proposal still highlights and lists it.
 3. **Order.** The first option is the default. Parsers and writers keep the order.
 4. **Taking the amount from the first option.** A later option written with no braces (one-word names only) or with empty braces takes the first option's amount, both the quantity and the unit, and scales as the first option does: in `@haddock{500%g}|@cod`, cod is 500 g. A name of more than one word needs its braces, as everywhere in Cooklang: `@crème fraîche{}`. When the first option has no amount, or is a bracketed option, there is nothing to take. The author is saying the swap is one for one; when it is not, each option gets its own amount.
@@ -124,13 +124,13 @@ Rules:
 6. **One for many.** Round brackets hold two or more components joined by `+`, with optional spaces around the `+` and nothing else inside. Brackets are an option only when a `|` touches them, so `(@salt{} and @pepper{})` in prose stays text with two ingredients. A bracketed option may come first: `(@lemon juice{30%ml} + @sugar syrup{15%ml})|@sour mix{45%ml}`.
 7. **What follows an option**, in this order: its braces, its `(preparation)`, its `?label` (Part 2), its `[reason]`. After a bracketed option the label and the reason follow the closing bracket.
 8. **Reason.** `[text]` after an option says when to pick it: `@galangal{2%cm}|@ginger{2%cm}[if galangal is unavailable]`. It belongs to the option it follows. It is display text and is never parsed. It may wrap across a line inside a step. It is read only after an option of a group or after a labelled component; anywhere else square brackets stay text. `[-` still opens a block comment.
-9. **Kinds.** Ingredients, cookware and recipe references can be options. A group may mix an ingredient and a cookware item: `#pie weights{}|@dried beans{}`. Timers cannot be options; a time that differs belongs in a labelled step.
+9. **Kinds.** Ingredients, cookware and recipe references can be options. A group may mix an ingredient and a cookware item: `#pie weights{}|@dried beans{}`. A timer can be an option only beside other timers: `~{40%minutes}|~{12%minutes}?air-fryer` is 40 minutes, or 12 when "air-fryer" is active. Each timer option is written in full, so rules 4 to 6 do not apply to timers. Every timer option after the first needs a label (Part 2), because nothing else says when to use it.
 10. **No nesting.** A bracketed option holds components, not groups.
 11. **Optional.** The `?` marker of [0018](0018-optional-components.md) on the first option makes the slot optional: `@?sour cream{}|@yoghurt{}` is "optionally, sour cream or yoghurt". It is accepted on later options and changes nothing there. Otherwise, switching from sour cream to yoghurt would turn an optional topping into a required one.
 
 In a group with no labels, the first option is the one the recipe uses, and the others are what the cook may use in its place.
 
-**If Part 1 is accepted alone,** two things wait for Part 2: the amount with no name (rule 5) and the label in rule 7. Everything else in Part 1 stands without labels.
+**If Part 1 is accepted alone,** three things wait for Part 2: the amount with no name (rule 5), timer groups (rule 9) and the label in rule 7. Everything else in Part 1 stands without labels.
 
 ### Part 2: labels
 
@@ -150,7 +150,7 @@ A **label** is a `?` followed directly by a name: `?sourdough`, `?air-fryer`, `?
 
 **On a single component.** `@chilli flakes{1%tsp}?spicy` is in the recipe only when "spicy" is on. `@?chilli flakes{1%tsp}` from [0018](0018-optional-components.md) stays what it is: one ingredient the cook may skip, with no name and no link to anything else. A label is a named switch that can move several things at once.
 
-**On a timer.** `Rest in the fridge for ~{12%hours}?sourdough` has that timer only when "sourdough" is active. A timer takes a label but is never an option: a `|` between two timers is text, so `~{40%minutes}|~{12%minutes}?air-fryer` is two timers, the second with a label.
+**On a timer.** `Rest in the fridge for ~{12%hours}?sourdough` has that timer only when "sourdough" is active. A time that differs between two paths is a timer group: `Bake for ~{40%minutes}|~{12%minutes}?air-fryer`.
 
 **On a step.** A step that starts with `?label:` is in the recipe only when the label is active. The label covers the whole step, however many lines it has, and everything in it: its ingredients, its cookware and its timers. The prefix is not part of the step's text. A space after the colon is optional.
 
@@ -228,7 +228,8 @@ label            = "?", label name, [ "=", label name ] ;
 label name       = label character, { label character | "-" } ;
 label character  = ? Unicode General Category L* or Nd ? ;
 
-labelled timer   = timer, label, [ reason ] ;
+timer slot       = timer option, { gap, "|", gap, timer option } ;
+timer option     = timer, [ label ], [ reason ] ;
 labelled step    = label, ":", { white space }, step ;
 labelled note    = note marker, { white space }, label, ":", { white space }, { text item } ;
 section line     = "=", { "=" }, { white space }, [ section name ], [ white space, label ], { white space }, { "=" } ;
@@ -238,7 +239,7 @@ Notes on the grammar:
 
 - A `slot` with one option is an ordinary component. With two or more it is a group.
 - An `amount option` cannot be the first option. A `bracketed option` can.
-- A timer is never part of a `slot`. It can only carry a label.
+- A `timer slot` holds timers only, and a `slot` holds none. Every timer option after the first needs a label.
 - A `reason` is read only when the slot is a group or the option has a label. Inside a step it may hold one line break, which `text item` does not show.
 - `|` is in Unicode category Sm, not P, so by today's `word` rule a one-word name would run through it. The `word` rule above ends the name there.
 - A `gap` allows one line break on each side of the `|`, inside a step.
@@ -249,18 +250,19 @@ Not in this proposal:
 
 - **How a selection is written outside the recipe:** in a `.shopping-list` file, in a `.menu` file, or on a reference from another recipe. Until that is defined, a reference with no selection means the default path. See [Open questions](#open-questions).
 - **Expressions over labels** ("and", "or", "not").
-- **Timers as options.** A timer can carry a label, but a group holds ingredients and cookware only. See [Open questions](#open-questions).
+- **A timer as an option beside an ingredient or a cookware item,** and the shorter option forms for timers.
 - **Conversion or substitution ratios.** The author writes each option's amount.
 - **A substitution that holds across recipes**, such as "this household uses oil for butter". A group is the swap the recipe's author wrote down.
 - **A version that changes most of the recipe.** That is a second file.
 
 ### Backward compatibility
 
-**Existing files.** Four forms change their reading:
+**Existing files.** Five forms change their reading:
 
 | Written | Today | Proposed |
 |---|---|---|
 | `@a{}\|@b{}`, and the other option forms of Part 1 after a `\|` | components with a `\|` in the text between them | one group |
+| `~{…}\|~{…}` | two timers with a `\|` in the text between them | one timer group |
 | `@a{}?word`, `#a{}?word`, `~{…}?word` | a component or a timer, and the text `?word` | a component or a timer with a label |
 | `?word: …` at the start of a step or a note | text | a labelled step or note |
 | `= Name ?word` | a section named "Name ?word" | the section "Name" with a label |
@@ -289,6 +291,7 @@ No file with any of these forms outside a comment was found in the recipe collec
 | `?yeast=fresh: Dissolve @fresh yeast{21%g} …` | the label as the step's first word | every yeast step is shown, and every yeast is on the list |
 | `= Pastry ?homemade` | a section titled "Pastry ?homemade" | both pastry sections are shown and counted |
 | `~{12%hours}?sourdough` | "12 hours?sourdough" | nothing; the timer is there on every path |
+| `~{40%minutes}\|~{12%minutes}?air-fryer` | "40 minutes\|12 minutes?air-fryer" | nothing; both timers are there on every path |
 
 Nothing is reported as an error, and the text stays readable: it looks like a cookbook that prints every variant. The lists hold every option of every choice. For "or" between two marked components that is what happens today. For steps and sections it is new: a file with three yeasts buys three yeasts, and the Country Loaf above lists 550 g of flour and 400 g of water, which is neither path. This is why [applications that write recipes](#converters-and-other-writers) should wait for the applications that read them.
 
@@ -325,9 +328,10 @@ Nothing is reported as an error, and the text stays readable: it looks like a co
 | `@butter{40%g}(soft)\|@olive oil{3%tbsp}?dairy-free[if no butter]` | a preparation on the first option; a label and a reason on the second |
 | `@white wine\|wine{100%ml}` | no group: the pipe is inside a name |
 | `at 180C\|355F` | text |
-| `~{10%minutes}\|~{6%minutes}` | two timers and a text pipe |
 | `~{12%hours}?sourdough` | a timer, in the recipe when `sourdough` is active |
-| `~{40%minutes}\|~{12%minutes}?air-fryer` | two timers and a text pipe; the second timer has the label `air-fryer` |
+| `~{40%minutes}\|~{12%minutes}?air-fryer` | a timer group: 40 minutes; 12 minutes when `air-fryer` is active |
+| `~{10%minutes}\|~{6%minutes}` | a timer group; the default is 10 minutes; the second option has no label, which is reported |
+| `@rice{200%g}\|~{10%minutes}` | no group: an ingredient, a text pipe and a timer |
 | `@urad dal{150%grams}[black lentils]` | no group and no label: the square brackets are text |
 | `@chilli flakes{1%tsp}?spicy` | in the recipe when the toggle `spicy` is on |
 | `Got a #grill{}? Fire it up.` | text |
@@ -365,6 +369,7 @@ Once accepted: sections for options and labels in the README, the grammar rules 
 1. The ingredient list, the equipment list, the timers and the total time follow the active path. Components and timers that are off, or that sit in steps and sections that are off, are not counted.
 2. Each option scales by its own amount. An amount taken from the first option scales with it.
 3. Only active options add to a total. The rule of 0018 that optional amounts are listed apart from required ones still holds.
+4. A timer group offers its active timer only, and only that one counts towards a total time.
 
 ### Shopping lists
 
@@ -387,7 +392,7 @@ Tools that check recipes should report:
 - a toggle whose name is one edit away from a declared option (`?sourdouhg`);
 - a choice with one option;
 - an amount with no name (`|{300%g}`) and no label;
-- a `|` between two timers, which is text and not a group;
+- a timer option after the first with no label;
 - two options of one group whose labels can be active together;
 - two active options that override the same metadata key;
 - a key in an option's mapping that is not a description or a known override.
@@ -425,10 +430,9 @@ Parsers that are not built on cooklang-rs follow the canonical tests. Until they
 
 1. **A selection outside the recipe.** A shopping list, a menu and a reference from another recipe all need a way to say "the sourdough path of Country Loaf". This proposal does not define one. The selection lines that 0018 added to `.shopping-list` files are the nearest precedent.
 2. **A name with no braces straight before a label or an amount option.** By the rules above `@cod?mild` is the ingredient `cod` with the label `mild`. Requiring braces before a label (`@cod{}?mild`) would be stricter and would leave `@cod?mild` as text. In the same way `@water|{300%g}` can be read as water followed by an amount option, where today the name runs to the brace and the ingredient is called `water|`. Written with its braces, `@water{}|{300%g}`, it reads one way only. A named timer with no braces before a label, `~rest?slow`, is the same case as `@cod?mild`.
-3. **Timers as options.** A time that differs between two paths is written as a labelled step, or as two labelled timers. `~{40%minutes}|~{12%minutes}?air-fryer` would be shorter and would match `@water{350%g}|{300%g}?sourdough`, but as proposed it is two timers with a text pipe between them. Whether a group should hold timers is open.
-4. **A labelled section with no name.** `= ?sourdough` reads as an unnamed section with a label. It could be made an error.
-5. **The opposite of a toggle.** There is no "not". A step that is in the recipe only when a toggle is off needs a choice with two options. Whether that is enough is a question for people who write such recipes.
-6. **Canonical tests.** The tests need a shape for a group, for a label and for `choices`. This proposal defines the syntax and its meaning, not the parsed model.
+3. **A labelled section with no name.** `= ?sourdough` reads as an unnamed section with a label. It could be made an error.
+4. **The opposite of a toggle.** There is no "not". A step that is in the recipe only when a toggle is off needs a choice with two options. Whether that is enough is a question for people who write such recipes.
+5. **Canonical tests.** The tests need a shape for a group, for a label and for `choices`. This proposal defines the syntax and its meaning, not the parsed model.
 
 ## Alternatives considered
 
