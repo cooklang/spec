@@ -9,7 +9,7 @@
 
 A recipe is a graph: the pastry and the filling are made apart and meet in the tin, and the stock is made once and used twice. Cooklang writes a recipe as a list of steps, and nothing in the file says which step feeds which. This proposal adds two pieces of syntax. `-> name` at the end of a step, or on a section line, names what that step or section makes. `@&name{}` in a later step uses it. A named thing of this kind is called a **product** below: the dough, the stock, the egg whites. A product is never on the shopping list, and from the two marks an application can build the graph of the recipe without reading the prose.
 
-The proposal has four parts. Part A, naming a product and using it, can be accepted and implemented without the others. Parts B (part of a product), C (two products from one step, and the amount made) and D (what nobody uses) each need Part A and nothing else.
+The proposal has five parts. Part A, naming a product and using it, can be accepted and implemented without the others. Parts B (part of a product), C (two products from one step, and the amount made), D (what nobody uses) and E (referring to an ingredient written earlier) each need Part A and nothing else.
 
 Discussion threads: [syntax for tracking combining of ingredients](https://github.com/cooklang/spec/discussions/62), [Tree / timeline representation of the cooking process](https://github.com/cooklang/spec/discussions/48), [Ingredient References Across Sections](https://github.com/cooklang/spec/discussions/125), [Break down recipe instructions further](https://github.com/cooklang/spec/discussions/59), and [Diagram generation](https://github.com/cooklang/cookcli/issues/410) in CookCLI.
 
@@ -44,8 +44,9 @@ Two pieces of syntax:
 | B | Part of a product | `@&levain{100%g}`, `@&mash{1/2}` |
 | C | Two products from one step; the amount made | `-> yolks + whites`, `-> stock{2%l}` |
 | D | What nobody uses | no syntax, one rule |
+| E | An ingredient written earlier, as it now is | `Melt @butter{100%g}.` … `Add the @&butter{}.` |
 
-All four in one file:
+Parts A to D in one file:
 
 ```cooklang
 ---
@@ -134,16 +135,36 @@ Rule 9 has a cost and a limit. The cost: to start something new in the middle of
 20. **A by-product** is a named product, or what is left of one, that no later step uses: the egg white in the tart above, a curry paste that keeps a week. An application lists by-products with the recipe ("also makes: 1 egg white"). Their ingredients stay on the shopping list. An application that works out nutrition does not count them in the dish. There is no mark for a by-product. A mistyped name shows up in the same list.
 21. **Nothing else is reported.** A step whose result has no name and is never used is how every file without marks reads today. It is not reported.
 
+### Part E: an ingredient written earlier
+
+22. **The same ingredient again.** `@&name{}` with empty braces, or `@&name` for a one-word name, where `name` is an ingredient written earlier in the file, is that same ingredient as it now is. It is not a second ingredient: it adds nothing to the ingredient list or the shopping list. The step shows the name.
+
+    ```cooklang
+    Melt @butter{100%g} in a #small pan{}.
+
+    Leave to cool for ~{5%minutes}.
+
+    Whisk @eggs{2} with @sugar{80%g}. -> egg mix
+
+    Pour the @&butter{} into the @&egg mix{}.
+    ```
+
+    The last step uses the melted, cooled butter. Butter is on the lists once, with 100 g.
+23. **Where the edge comes from.** The ingredient went into a line of steps: the step that last named it, and the steps that carried on from that one (rule 9). The edge comes from the last step of that line, here the cooling. If that line ended by naming a product, the ingredient is part of the product, and the product's name is the one to use; `@&butter{}` after `Melt @butter{100%g}. -> melted butter` is reported.
+24. **Written earlier.** The ingredient is written earlier in the file than the reference, as a product is (rule 6). A reference with nothing before it is reported.
+25. **With an amount.** `@&butter{30%g}` is not defined by this proposal. In the cooklang-rs extension it is 30 g more butter, added to the first amount on the lists. For a product the same form takes 30 g from what was made. See [Open questions](#open-questions).
+
 ### The graph
 
-An application builds the graph from four things:
+An application builds the graph from five things:
 
 - a node for each step;
 - an edge from the step that made a product to each step that uses it, with the amount when one is written;
 - an edge from a step to the next step in its section, when the first named no product (rule 9);
+- an edge from the line of steps an ingredient went into to a step that refers to that ingredient (rule 23);
 - raw ingredients, cookware and timers on the step that names them, as today.
 
-A product is always named before it is used (rule 6), so the graph has no cycles. An application may draw it as a tree, a table or a chart. When a product has two users, a table cannot hold it, and the application says so.
+A product is always named before it is used, and an ingredient is written before it is referred to (rules 6 and 24), so the graph has no cycles. An application may draw it as a tree, a table or a chart. When a product has two users, a table cannot hold it, and the application says so.
 
 ### Grammar
 
@@ -157,6 +178,7 @@ product          = product name, [ "{", [ amount ], "}" ] ;
 product name     = name start, { text item - "{" - "}" } ;
 name start       = text item - "@" - "#" - "~" - "&" - "?" - "{" - "}" - white space ;
 
+(* a product (Part A) or an ingredient written earlier (Part E) *)
 product use      = "@", [ optional marker ], "&", ( one word component | multiword component ) ;
 
 section line     = "=", { "=" }, { white space }, [ section name ],
@@ -174,7 +196,7 @@ Notes on the grammar:
 
 Not in this proposal:
 
-- **`@&` on an ingredient.** cooklang-rs has an extension in which `@&flour{}` refers to an ingredient written earlier. This proposal defines `@&` for products only. Rule 5 keeps the two apart, so both can be in one file.
+- **`@&` on an ingredient with an amount** (rule 25). The form with empty braces is Part E. Rule 5 keeps products and ingredients apart, so a file can hold both.
 - **Where a step happens and what it does.** Containers, verbs and their classes would let an application remove the edges that rule 9 gets wrong.
 - **How a result is divided between two products** with no written amount (rule 17).
 - **Products in `.menu` files**, such as a Monday dinner whose leftovers are Wednesday's lunch.
@@ -191,7 +213,7 @@ Not in this proposal:
 | `Turn the oven 180 -> 160 and bake.` | text | a product named "160 and bake.", which nothing uses, so it is listed as a by-product |
 | `Heat 60->80 °C.` | text | text: no white space before the arrow |
 
-Files written for the cooklang-rs extensions keep working: `@&flour{}` after `@flour{}` is still a reference to the ingredient, and the `@&(~1)name{}` forms are untouched.
+Files written for the cooklang-rs extensions keep working. `@&flour{}` after `@flour{}` is a reference to the ingredient there, and Part E gives it the same reading for the lists. `@&flour{50%g}` and the `@&(~1)name{}` forms are untouched.
 
 **New files in applications that predate this proposal.** Run with CookCLI 0.38.1:
 
@@ -236,6 +258,10 @@ A parser built on cooklang-rs with its extensions on behaves differently. Run wi
 | `-> butter` in a file with `@butter{50%g}` | reported: one name, two things |
 | `Mix the @&wet mix{} with eggs. -> batter` then `@&wet mix{}` | reported: used up by the step that made the batter |
 | `-> whites` that no step uses | a by-product, listed |
+| `Melt @butter{100%g}.` then, after a step that named a product, `Add the @&butter{}.` | the same butter; an edge from the melting step; butter on the lists once, 100 g |
+| `Melt @butter{100%g}.`, `Leave to cool.`, a step that named a product, then `Add the @&butter{}.` | the edge comes from the cooling step |
+| `Melt @butter{100%g}. -> melted butter` then `@&butter{}` | reported: the butter is part of "melted butter" |
+| `@&butter{30%g}` after `@butter{100%g}` | not defined here (rule 25) |
 
 ## Effect on applications which use Cooklang
 
@@ -253,7 +279,7 @@ Products are on no ingredient list and no shopping list, and are not matched aga
 
 ### Diagnostics
 
-- A use with no product of that name before it.
+- A use with no product and no ingredient of that name before it.
 - A name used again after it was used up (rule 8).
 - A product with the name of an ingredient or a cookware item.
 - A name given twice outside the three cases of rule 5.
@@ -261,6 +287,7 @@ Products are on no ingredient list and no shopping list, and are not matched aga
 - A section's own name used in its first step.
 - Uses that add up to more than the amount made; a share above 1.
 - A section product over a last step with two or more products.
+- A reference to an ingredient that has since gone into a named product (rule 23).
 
 A by-product is listed with the recipe, not reported as a fault.
 
@@ -298,8 +325,9 @@ Parsers that are not built on cooklang-rs follow the canonical tests. Until they
 6. **One set of names** for products, ingredients and cookware (rule 5). It costs a rename now and then: a pie with a whipped cream made in the recipe and a bought whipped cream as garnish. Cookware could be left out of the set.
 7. **An arrow in prose** (rule 1). Every arrow that ends a step starts a tail. An arrow could instead be text when what follows it ends in a full stop, which saves the rare prose arrow and makes the reading depend on punctuation.
 8. **The dish** (rule 19) is what the last step makes. It could instead be the product of the last section line that has one.
-9. **`@&` on an ingredient.** Whether the cooklang-rs reference to an earlier ingredient should enter the specification, and whether it adds to the amount or takes from a declared total, is left for a separate proposal.
-10. **Canonical tests.** The tests need a shape for a product, a use and the graph. This proposal defines the syntax and its meaning, not the parsed model.
+9. **`@&` on an ingredient with an amount** (rule 25). `@&butter{30%g}` could add 30 g to the butter on the lists, as the cooklang-rs extension does, or take 30 g from the butter already written, as the same form does on a product. The two readings buy different amounts. It could also depend on where the first mention is: a total when it sits in an ingredient list at the top, more of it otherwise.
+10. **How far an ingredient reference reaches** (rule 23). The edge comes from the line of steps the ingredient went into. It could instead always come from the step that last named it, which is simpler and leaves a step such as "leave to cool" with nothing after it.
+11. **Canonical tests.** The tests need a shape for a product, a use and the graph. This proposal defines the syntax and its meaning, not the parsed model.
 
 ## Alternatives considered
 
