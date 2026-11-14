@@ -151,7 +151,7 @@ Both keys apply to ingredient names, cookware names and units, in one name space
 
 The file uses the line syntax of `aisle.conf`. Each section is named after a language, in the format of `locale`. On each line the first entry is the dictionary form and the other entries are written forms. An entry written `category=form` is also the count form for that plural category, the same as an entry under `plurals`. A line that starts with `--` is a comment.
 
-A [sample file](../examples/config/forms.conf) has a few common ingredients, counting units and cookware for twelve languages. It is a starting point for review by speakers of those languages, not a finished table.
+A [sample file](../examples/config/forms.conf) has a few common ingredients, counting units and cookware for thirteen languages. It is a starting point for review by speakers of those languages, not a finished table.
 
 The file is looked up the way `aisle.conf` is: in the collection's `config` directory first, then in the user's global configuration directory.
 
@@ -209,6 +209,9 @@ Where a tool prints a number directly before a word (an amount and its unit, or 
 2. Finds the plural category of the number with the CLDR plural rules of the language. The language is the recipe's `locale`, or else the section of `forms.conf` in which the word was found.
 3. Prints the form declared for that category. If none is declared it prints the `other` form, and if that is missing too, the dictionary form.
 4. For a range, uses the upper end.
+5. For a fraction below one that is printed as a fraction (`1/2`, `½`), uses the `one` form in English, German, Dutch, Spanish and Italian: `1/2 cup`, `½ Prise`. The CLDR rules put 0.5 in `other` for these languages, which is right for a decimal (`0.5 cups`) and wrong for a fraction. Other languages follow the CLDR category (`1/2 стакана`, `1/2 sipulia`).
+
+Count forms for units come from these tables like those of any other word. A unit table may know that `cup` and `cups` are one unit; it does not say which of them goes with a number.
 
 A word with no count forms, or with no known language, is printed as the author wrote it, as today.
 
@@ -221,6 +224,8 @@ A word with no count forms, or with no known language, is printed as the author 
 | the same, scaled to 1.5 | `1.5 зубчика` (fractions are `other` in Russian) |
 | `@tomates:tomate{3}`, `locale: fr`, `tomate: {one: tomate, other: tomates}` | `3 tomates` |
 | the same, scaled to 1.5 | `1.5 tomate` (French counts 1.5 as `one`) |
+| `@onions{3}`, `locale: en`, `onion: {one: onion, other: onions}`, scaled to 1 | `1 onion` |
+| `@flour{1%cup}`, `cup: {one: cup, other: cups}`, scaled by 3 and by 0.5 | `3 cups`, `1/2 cup` |
 
 Tools must not derive a form by rule. Every printed form was written by the author or by the keeper of the table. The only language data a tool needs is the CLDR plural rule set, which is available as a library on every platform.
 
@@ -290,7 +295,9 @@ Parsers need the grammar change, the `written` property, the two metadata keys, 
 2. **Recipes with no `locale`.** The draft applies every section of `forms.conf`. The other choice is a default language for the collection, which needs a setting that does not exist yet.
 3. **Count forms in `forms.conf`.** Is `category=form` on the same line readable enough for languages with three or four forms?
 4. **Shared tables.** Should there be a common place for ready-made `forms.conf` sections per language?
-5. **Words this cannot express.** Speakers of the languages mentioned above are asked to try their recipes against the rules and report what does not fit.
+5. **Fractions.** Which languages use the singular after a fraction below one? The draft lists English, German, Dutch, Spanish and Italian.
+6. **English.** The draft has no "add an s" rule, because it is wrong for tomato, leaf and loaf; English count forms are declared like any others, and the sample file has an `[en]` section. Should tools be allowed to pluralise English by rule when nothing is declared?
+7. **Words this cannot express.** Speakers of the languages mentioned above are asked to try their recipes against the rules and report what does not fit.
 
 ## Alternatives considered
 
