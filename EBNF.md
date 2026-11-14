@@ -1,20 +1,28 @@
 
 # Cooklang EBNF description
 
+WIP, the EBNF is outdated and doesn't contain latest changes yet.
+
 ```ebnf
-recipe = { metadata | step }- ;
+recipe = { metadata | step | note }- ;
 
 (* not sure how to show that, but two below should start from a new line *)
 metadata = ">", ">", { text item - ":" }-, ":", { text item }-, new line character ;
-step     = { text item | ingredient | cookware | timer }-, new line character ;
+step     = { text item | ingredient | cookware | timer }-, new line character, blank line ;
+
+note marker = ">" ;
+note = { note marker, { text item }, blank line }-, blank line ;
 
 ingredient           = one word ingredient | multiword ingredient ;
-one word ingredient  = "@", one word component ;
-multiword ingredient = "@", multiword component ;
+one word ingredient  = "@", [ optional marker ], one word component ;
+multiword ingredient = "@", [ optional marker ], multiword component ;
 
 cookware             = one word cookware | multiword cookware ;
-one word cookware    = "#", one word component ;
-multiword cookware   = "#", multiword component ;
+one word cookware    = "#", [ optional marker ], one word component ;
+multiword cookware   = "#", [ optional marker ], multiword component ;
+
+(* marks the ingredient or cookware as optional; not part of the name *)
+optional marker      = "?" ;
 
 timer                = no name timer | one word timer | multiword timer ;
 no name timer        = "~", no name component ;
@@ -36,6 +44,7 @@ text item = ? any character except new line character ? ;
 new line character    = ? newline characters (U+000A ~ U+000D, U+0085, U+2028, and U+2029) ? ;
 white space           = ? Unicode General Category Zs and CHARACTER TABULATION (U+0009) ? ;
 punctuation character = ? Unicode General Category P* ? ;
+blank line = { white space }, new line character ;
 
 comments       = "-", "-", text item, new line character ;
 block comments = "[", "-", ? any character except "-" followed by "]" ?, "-", "]" ;
