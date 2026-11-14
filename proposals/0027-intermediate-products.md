@@ -152,7 +152,18 @@ Rule 9 has a cost and a limit. The cost: to start something new in the middle of
     The last step uses the melted, cooled butter. Butter is on the lists once, with 100 g.
 23. **Where the edge comes from.** The ingredient went into a line of steps: the step that last named it, and the steps that carried on from that one (rule 9). The edge comes from the last step of that line, here the cooling. If that line ended by naming a product, the ingredient is part of the product, and the product's name is the one to use; `@&butter{}` after `Melt @butter{100%g}. -> melted butter` is reported.
 24. **Written earlier.** The ingredient is written earlier in the file than the reference, as a product is (rule 6). A reference with nothing before it is reported.
-25. **With an amount.** `@&butter{30%g}` is not defined by this proposal. In the cooklang-rs extension it is 30 g more butter, added to the first amount on the lists. For a product the same form takes 30 g from what was made. See [Open questions](#open-questions).
+25. **With an amount.** `@&butter{30%g}` takes 30 g of the butter written earlier, as the same form takes part of a product. Rules 10 to 14 apply: an amount with a unit takes that much, a number with no unit is a share (`@&butter{1/2}`) or, for an ingredient written with a count, a count out of it (`@&eggs{1}` after `@eggs{4}`), and empty braces take what is left. Nothing is added to the ingredient list or the shopping list. What was written is the sum of the plain mentions of the ingredient before the reference, and uses that add up to more than that are reported.
+26. **More of an ingredient.** Writing the ingredient again without `&`, `@butter{30%g}`, is 30 g more butter, as today: the lists hold the sum. `@+butter{30%g}` means the same and says it on purpose: more butter, bought as well, not the butter from before. With the optional marker the order is `@?+butter{30%g}`.
+
+    ```cooklang
+    Melt @butter{100%g} in a #small pan{}.
+
+    Brush the tin with @&butter{20%g}.
+
+    Stir the rest of the @&butter{} into the batter, and serve with @+butter{30%g}(cold, sliced).
+    ```
+
+    The lists hold 130 g of butter. 20 g of the melted butter go on the tin and 80 g into the batter.
 
 ### The graph
 
@@ -179,6 +190,7 @@ product name     = name start, { text item - "{" - "}" } ;
 name start       = text item - "@" - "#" - "~" - "&" - "?" - "{" - "}" - white space ;
 
 (* a product (Part A) or an ingredient written earlier (Part E) *)
+(* "+" in the same place marks more of an ingredient: "@", [ optional marker ], "+", ... *)
 product use      = "@", [ optional marker ], "&", ( one word component | multiword component ) ;
 
 section line     = "=", { "=" }, { white space }, [ section name ],
@@ -196,7 +208,6 @@ Notes on the grammar:
 
 Not in this proposal:
 
-- **`@&` on an ingredient with an amount** (rule 25). The form with empty braces is Part E. Rule 5 keeps products and ingredients apart, so a file can hold both.
 - **Where a step happens and what it does.** Containers, verbs and their classes would let an application remove the edges that rule 9 gets wrong.
 - **How a result is divided between two products** with no written amount (rule 17).
 - **Products in `.menu` files**, such as a Monday dinner whose leftovers are Wednesday's lunch.
@@ -213,7 +224,7 @@ Not in this proposal:
 | `Turn the oven 180 -> 160 and bake.` | text | a product named "160 and bake.", which nothing uses, so it is listed as a by-product |
 | `Heat 60->80 °C.` | text | text: no white space before the arrow |
 
-Files written for the cooklang-rs extensions keep working. `@&flour{}` after `@flour{}` is a reference to the ingredient there, and Part E gives it the same reading for the lists. `@&flour{50%g}` and the `@&(~1)name{}` forms are untouched.
+Files written for the cooklang-rs extensions: `@&flour{}` after `@flour{}` is a reference to the ingredient there, and Part E gives it the same reading for the lists. `@+flour{50%g}` is a new mention there, as in rule 26. The `@&(~1)name{}` forms are untouched. One form changes its reading: `@&flour{50%g}` adds 50 g to the lists in the extension, and takes 50 g of the flour already written under rule 25, so the list is 50 g shorter. None of the recipe files that were searched holds the form. An author who meant more flour writes `@flour{50%g}` or `@+flour{50%g}`.
 
 **New files in applications that predate this proposal.** Run with CookCLI 0.38.1:
 
@@ -222,6 +233,7 @@ Files written for the cooklang-rs extensions keep working. `@&flour{}` after `@f
 | `Mix @flour{200%g} and @water{120%ml} in a #bowl{}. -> shaggy dough` | "Mix flour and water in a bowl. -> shaggy dough" | flour and water, as they should |
 | `Knead the @&shaggy dough{}.` | "Knead the &shaggy dough." | an ingredient "&shaggy dough" on the ingredient list and the shopping list |
 | `Use half the @&dough{1/2}.` | "Use half the &dough." | "&dough 1/2" on both lists |
+| `@butter{100%g}` then `@&butter{30%g}` and `@+butter{20%g}` | "butter", "&butter", "+butter" | three ingredients: butter 100 g, "&butter" 30 g, "+butter" 20 g |
 | `= Dough -> dough` | a section titled "Dough -> dough" | nothing |
 
 The text stays readable. The shopping list gains one odd line per product, each starting with `&`. Nothing is reported as an error.
@@ -261,7 +273,11 @@ A parser built on cooklang-rs with its extensions on behaves differently. Run wi
 | `Melt @butter{100%g}.` then, after a step that named a product, `Add the @&butter{}.` | the same butter; an edge from the melting step; butter on the lists once, 100 g |
 | `Melt @butter{100%g}.`, `Leave to cool.`, a step that named a product, then `Add the @&butter{}.` | the edge comes from the cooling step |
 | `Melt @butter{100%g}. -> melted butter` then `@&butter{}` | reported: the butter is part of "melted butter" |
-| `@&butter{30%g}` after `@butter{100%g}` | not defined here (rule 25) |
+| `@&butter{30%g}` after `@butter{100%g}` | 30 g of that butter; butter on the lists once, 100 g; 70 g left |
+| `@&butter{}` after it | the 70 g that are left |
+| `@&eggs{1}` after `@eggs{4}` | one of the four eggs |
+| `@&butter{150%g}` after `@butter{100%g}` | reported: more than was written |
+| `@butter{100%g}` then `@butter{30%g}` or `@+butter{30%g}` | two mentions; butter on the lists with 130 g |
 
 ## Effect on applications which use Cooklang
 
@@ -325,7 +341,7 @@ Parsers that are not built on cooklang-rs follow the canonical tests. Until they
 6. **One set of names** for products, ingredients and cookware (rule 5). It costs a rename now and then: a pie with a whipped cream made in the recipe and a bought whipped cream as garnish. Cookware could be left out of the set.
 7. **An arrow in prose** (rule 1). Every arrow that ends a step starts a tail. An arrow could instead be text when what follows it ends in a full stop, which saves the rare prose arrow and makes the reading depend on punctuation.
 8. **The dish** (rule 19) is what the last step makes. It could instead be the product of the last section line that has one.
-9. **`@&` on an ingredient with an amount** (rule 25). `@&butter{30%g}` could add 30 g to the butter on the lists, as the cooklang-rs extension does, or take 30 g from the butter already written, as the same form does on a product. The two readings buy different amounts. It could also depend on where the first mention is: a total when it sits in an ingredient list at the top, more of it otherwise.
+9. **`@+name`** (rule 26). It reads exactly as the plain `@name` does. It is there so that an author can say "more of it" on purpose, and it matches the "new" modifier of the cooklang-rs extensions. An application that predates this proposal lists it as a separate ingredient called "+butter"; the plain form has no such cost.
 10. **How far an ingredient reference reaches** (rule 23). The edge comes from the line of steps the ingredient went into. It could instead always come from the step that last named it, which is simpler and leaves a step such as "leave to cool" with nothing after it.
 11. **Canonical tests.** The tests need a shape for a product, a use and the graph. This proposal defines the syntax and its meaning, not the parsed model.
 
