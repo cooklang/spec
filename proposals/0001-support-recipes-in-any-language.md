@@ -149,7 +149,9 @@ Both keys apply to ingredient names, cookware names and units, in one name space
 
 ### `config/forms.conf`
 
-The file uses the line syntax of `aisle.conf`. Each section is named after a language, in the format of `locale`. On each line the first entry is the dictionary form and the other entries are written forms. An entry written `category=form` is also the count form for that plural category, the same as an entry under `plurals`.
+The file uses the line syntax of `aisle.conf`. Each section is named after a language, in the format of `locale`. On each line the first entry is the dictionary form and the other entries are written forms. An entry written `category=form` is also the count form for that plural category, the same as an entry under `plurals`. A line that starts with `--` is a comment.
+
+A [sample file](../examples/config/forms.conf) has a few common ingredients, counting units and cookware for twelve languages. It is a starting point for review by speakers of those languages, not a finished table.
 
 The file is looked up the way `aisle.conf` is: in the collection's `config` directory first, then in the user's global configuration directory.
 
