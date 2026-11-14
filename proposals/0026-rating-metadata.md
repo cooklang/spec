@@ -1,6 +1,6 @@
 # `rating` metadata
 
-* Proposal: [0025-rating-metadata](0025-rating-metadata.md)
+* Proposal: [0026-rating-metadata](0026-rating-metadata.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
 * Review Manager: TBD
 * Status: **Awaiting review**
