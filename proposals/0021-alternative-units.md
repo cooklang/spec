@@ -112,7 +112,7 @@ Rules:
 3. The first alternative is the primary. Order is meaningful and parsers must preserve it.
 4. An empty alternative is an error: `{2%cups|}` and `{|260%g}` are reported, and the empty part is dropped.
 5. Alternatives apply to ingredients only. Cookware and timer amounts are unchanged, and a `|` inside them stays part of the text. (`~{1%hour|60%minutes}` has no use, and cookware quantities have no units to alternate.)
-6. `|` between components, as in `@butter{}|ghee{}` for substitute ingredients, and `|` in a name, as in the cooklang-rs alias extension `@white wine|wine{}`, are outside the braces and unaffected. This proposal claims `|` only inside an ingredient's braces.
+6. `|` between components, as in `@butter{}|@ghee{}` for substitute ingredients, and `|` in a name, as in the cooklang-rs alias extension `@white wine|wine{}`, are outside the braces and unaffected. This proposal claims `|` only inside an ingredient's braces.
 
 ### Fixed quantities
 
@@ -213,7 +213,7 @@ It does not standardise conversion ratios, rounding, density data or which units
 
 Under the current specification `@flour{2%cups|260%g}` is an ingredient with quantity text `2` and unit `cups|260%g` (the unit runs to the closing brace). That is not a useful parse and no recipe relies on it. After this change it is 2 cups with a 260 g equivalent.
 
-A `|` inside a single text quantity, such as `@cheese{cheddar|gouda}`, would now be read as two text alternatives. Such recipes are not known to exist; the form that people do write for substitutes puts the `|` between components (`@cheddar{}|gouda{}`), which is unaffected. Parsers that read the new `alternatives` field from such a recipe still get the first part as the quantity.
+A `|` inside a single text quantity, such as `@cheese{cheddar|gouda}`, would now be read as two text alternatives. Such recipes are not known to exist; the form that people do write for substitutes puts the `|` between components (`@cheddar{}|@gouda{}`), which is unaffected. Parsers that read the new `alternatives` field from such a recipe still get the first part as the quantity.
 
 `unit system` with a scalar value keeps the meaning PR #148 gives it. The list form is new.
 
@@ -271,7 +271,7 @@ Proposed in #84. Commas already appear in text quantities and in the wild as pre
 
 ### Double pipe: `{2.5%cups||370%g}`
 
-Suggested in #84 to read as a logical "or". It is more typing for no gain in clarity, and a single `|` already reads as "or" in the substitute-ingredient form `@butter{}|ghee{}`.
+Suggested in #84 to read as a logical "or". It is more typing for no gain in clarity, and a single `|` already reads as "or" in the substitute-ingredient form `@butter{}|@ghee{}`.
 
 ### A second set of braces or parentheses: `@flour{2%cups}{260%g}`, `@flour{2%cups}(260%g)`
 
