@@ -22,7 +22,7 @@ rating: 4
 
 **Applications cannot do anything with it.** A key an application does not know is at best printed as text. Nothing can show it as a rating, sort a collection by it, or keep it when a recipe is opened in another application.
 
-**People rate on different scales.** Five stars is the most common, but some people score out of 10 and some keep only a few levels. A key that accepts one scale makes everyone else convert their ratings before the key is of any use to them.
+**Not everyone rates out of five.** Five stars is the most common scale, but not the only one, and a key that accepts a single scale makes anyone used to another convert their ratings before the key is of any use to them.
 
 **The same value is treated differently depending on how it is typed.** With CookCLI 0.38.1:
 
@@ -61,7 +61,7 @@ An application that knows the key shows `rating: 4` as 4 out of 5, in whatever f
 
 6. **Not a fraction.** Elsewhere in Cooklang `4/5` is the fraction 0.8. In `rating`, `N/M` gives a score and its scale: `3/10` is 3 out of 10, not the number 0.3.
 
-7. **Display.** How a rating is shown is up to the application: icons, a number with its scale ("8/10", "⭐ 4.5/5"), a bar, or anything else. Whatever the form, the scale has to be visible, because a 7 means little without it. An application that always draws the same number of icons may convert for display, showing `8/10` as four of five stars, but must not write the converted value back. Assistive technology gets the words, for example "4 out of 5".
+7. **Display.** How a rating is shown is up to the application: icons, a number with its scale ("8/10", "⭐ 4.5/5"), a bar, or anything else. Whatever the form, it should be clear what the top of the scale is, because a 7 means little without it. An application that always draws the same number of icons may convert for display, showing `8/10` as four of five stars, but must not write the converted value back. Assistive technology gets the words, for example "4 out of 5".
 
 8. **Comparing.** Ratings on different scales compare by N divided by M, so `4`, `4/5` and `8/10` are equal. An application that sorts or filters by rating compares them this way.
 
@@ -105,11 +105,11 @@ testMetadataRatingWithScale:
 
 Parsers that expose typed canonical keys add `rating` and return the value and its scale (5 when none is written), or nothing when the recipe is not rated. Parsers that only pass metadata through need no change.
 
-One thing to watch in applications that list unknown keys generically: once the parser treats `rating` as canonical, it is no longer among the unknown keys. An application has to start showing the rating itself in the same release, including the raw text for a value that is not a rating, or the key disappears from the page.
+One thing to watch in applications that list unknown keys generically: once the parser treats `rating` as canonical, it is no longer among the unknown keys. An application has to start showing the rating itself in the same release, or the key disappears from the page. For a value that is not a rating, it may show the raw text, as it does for a custom key.
 
 ### CookCLI (terminal and web-server)
 
-`cook recipe` prints the rating with its scale next to the other metadata, for example `rating: 4/5` or `rating: 8/10`. The web server's recipe page shows a rating label next to `difficulty`, `diet` and the rest, for example "⭐ 4.5/5". A value that is not a rating is shown as plain text.
+`cook recipe` prints the rating with its scale next to the other metadata, for example `rating: 4/5` or `rating: 8/10`. The web server's recipe page shows a rating label next to `difficulty`, `diet` and the rest, for example "⭐ 4.5/5". CookCLI shows a value that is not a rating as plain text.
 
 No new sub-command. Sorting or filtering the recipe list by rating is useful and can follow; it is not part of this proposal.
 
@@ -123,11 +123,11 @@ The recipe screen shows the rating with the other metadata, in the application's
 
 **Guessing the scale from the value,** for example reading a bare number above 5 as out of 10. It saves typing `/10`, but `rating: 5` is then 5 out of 5 or 5 out of 10, and two applications can guess differently. A bare number is always out of 5.
 
-**Capping the scale,** for example at 10. It would rule out scores out of 100, which some people keep, and buys nothing: dividing N by M compares any two scales.
+**Capping the scale,** for example at 10. It would rule out scores out of 100 and buys nothing: dividing N by M compares any two scales.
 
 **Nested keys** (`rating: {value: 8, best: 10}`). The same information as `8/10`, but longer to type and harder to read as plain text.
 
-**Whole numbers only.** Simpler, but half stars and scores such as 7.5 out of 10 are common, and a file with `4.5` already exists in public repositories.
+**Whole numbers only.** Simpler, but half stars are common, and a file with `4.5` already exists in public repositories.
 
 **Zero means not rated.** The first draft did this, so that an application clearing a rating could write `0`. But 0 is a real score on many scales, and clearing a rating can remove the key instead.
 
@@ -139,4 +139,4 @@ The recipe screen shows the rating with the other metadata, in the application's
 
 ## Acknowledgments
 
-Thanks to the community member who asked whether CookCLI could show `rating: 4/5` as stars and offered to implement it, and to the reviewer on the pull request who pointed out that a fixed scale is limiting.
+Thanks to the community member who asked whether CookCLI could show `rating: 4/5` as stars and offered to implement it, and to the reviewer on the pull request who suggested showing the rating as a number with its scale and pointed out how a bare number could be misread.
