@@ -1,4 +1,4 @@
-version: 9
+version: 10
 tests:
   testBasicDirection:
     source: |
@@ -378,6 +378,9 @@ tests:
         "sourced": babooshka
 
 
+  # NOTE: a `---` that is not on a line of its own does not open front matter.
+  # It starts with `--`, so it is a comment to the end of the line, and so is
+  # the last line.
   testMetadataBreak:
     source: |
       hello ---
@@ -387,7 +390,7 @@ tests:
       steps:
         -
           - type: text
-            value: "hello --- sourced: babooshka ---"
+            value: "hello  sourced: babooshka"
       metadata: {}
 
 
@@ -402,10 +405,12 @@ tests:
         "cooking time": 30 mins
 
 
+  # NOTE: the space after the colon is required, without it the line is not
+  # a YAML mapping
   testMetadataMultiwordKeyWithSpaces:
     source: |
       ---
-      cooking time    :30 mins
+      cooking time    : 30 mins
       ---
     result:
       steps: []
