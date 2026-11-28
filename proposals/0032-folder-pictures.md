@@ -3,7 +3,7 @@
 * Proposal: [0032-folder-pictures](0032-folder-pictures.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
 * Review Manager: TBD
-* Status: **Awaiting review**
+* Status: **Accepted, in implementation**
 
 ## Introduction
 
