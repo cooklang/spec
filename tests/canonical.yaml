@@ -1,4 +1,4 @@
-version: 9
+version: 10
 tests:
   testBasicDirection:
     source: |
@@ -1102,6 +1102,341 @@ tests:
             name: "milk"
             quantity: 0.5
             units: "cup"
+      metadata: {}
+
+
+  testNotePlain:
+    source: |
+      > Don't burn the roux!
+
+      Mash @potato{2%kg}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Mash "
+          - type: ingredient
+            name: "potato"
+            quantity: 2
+            units: "kg"
+      notes:
+        -
+          - type: text
+            value: "Don't burn the roux!"
+      metadata: {}
+
+
+  testNoteMultipleLines:
+    source: |
+      > The dough keeps
+      > up to 3 days.
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "The dough keeps up to 3 days."
+      metadata: {}
+
+
+  testNoteFormatting:
+    source: |
+      > **Make ahead:** the dough keeps *up to 3 days* in the fridge.
+      > See the [shaping guide](https://example.com/shaping) before you start.
+
+      Mix @flour{500%g}.
+    result:
+      steps:
+        -
+          - type: text
+            value: "Mix "
+          - type: ingredient
+            name: "flour"
+            quantity: 500
+            units: "g"
+          - type: text
+            value: "."
+      notes:
+        -
+          - type: text
+            value: "Make ahead:"
+            strong: true
+          - type: text
+            value: " the dough keeps "
+          - type: text
+            value: "up to 3 days"
+            emphasis: true
+          - type: text
+            value: " in the fridge. See the "
+          - type: text
+            value: "shaping guide"
+            link: "https://example.com/shaping"
+          - type: text
+            value: " before you start."
+      metadata: {}
+
+
+  testNoteFormattingUnderscores:
+    source: |
+      > __Optional__, but _highly_ suggested.
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "Optional"
+            strong: true
+          - type: text
+            value: ", but "
+          - type: text
+            value: "highly"
+            emphasis: true
+          - type: text
+            value: " suggested."
+      metadata: {}
+
+
+  testNoteFormattingNested:
+    source: |
+      > **Serve *immediately* or not at all**
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "Serve "
+            strong: true
+          - type: text
+            value: "immediately"
+            strong: true
+            emphasis: true
+          - type: text
+            value: " or not at all"
+            strong: true
+      metadata: {}
+
+
+  testNoteFormattingStrongAndEmphasis:
+    source: |
+      > ***both***
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "both"
+            strong: true
+            emphasis: true
+      metadata: {}
+
+
+  testNoteFormattingAcrossLines:
+    source: |
+      > It is *very
+      > important* to rest the dough.
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "It is "
+          - type: text
+            value: "very important"
+            emphasis: true
+          - type: text
+            value: " to rest the dough."
+      metadata: {}
+
+
+  testNoteFormattingNotAcrossNotes:
+    source: |
+      > *one
+
+      > two*
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "*one"
+        -
+          - type: text
+            value: "two*"
+      metadata: {}
+
+
+  testNoteLinkToRecipe:
+    source: |
+      > This filling also works in [Spinach pie](<./Spinach pie.cook>).
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "This filling also works in "
+          - type: text
+            value: "Spinach pie"
+            link: "./Spinach pie.cook"
+          - type: text
+            value: "."
+      metadata: {}
+
+
+  testNoteLinkWithFormattedText:
+    source: |
+      > See [**Basic** dough](<./Basic dough.cook>)
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "See "
+          - type: text
+            value: "Basic"
+            strong: true
+            link: "./Basic dough.cook"
+          - type: text
+            value: " dough"
+            link: "./Basic dough.cook"
+      metadata: {}
+
+
+  testNoteLinkTitleIsDiscarded:
+    source: |
+      > [Guide](https://example.com/guide "The guide")
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "Guide"
+            link: "https://example.com/guide"
+      metadata: {}
+
+
+  testNoteImageIsTextAndLink:
+    source: |
+      > ![photo](dough.jpg)
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "!"
+          - type: text
+            value: "photo"
+            link: "dough.jpg"
+      metadata: {}
+
+
+  testNoteBracketsWithoutDestination:
+    source: |
+      > [tips] (see below) and [1]
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "[tips] (see below) and [1]"
+      metadata: {}
+
+
+  testNoteLoneAsterisk:
+    source: |
+      > *Use fine sea salt
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "*Use fine sea salt"
+      metadata: {}
+
+
+  testNoteSpacedAsterisk:
+    source: |
+      > * Day-old rice works best
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "* Day-old rice works best"
+      metadata: {}
+
+
+  testNoteUnderscoreInsideWord:
+    source: |
+      > Save it as tomato_sauce_v2.cook
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "Save it as tomato_sauce_v2.cook"
+      metadata: {}
+
+
+  testNoteUnclosedStrong:
+    source: |
+      > **unclosed bold and *closed italic*
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "**unclosed bold and "
+          - type: text
+            value: "closed italic"
+            emphasis: true
+      metadata: {}
+
+
+  testNoteEscapedDelimiters:
+    source: |
+      > This is \*not\* emphasis, and 2\*250 g is \[not\](a link).
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "This is *not* emphasis, and 2*250 g is [not](a link)."
+      metadata: {}
+
+
+  testNoteCommentInsideFormatting:
+    source: |
+      > *Use [- fresh -] herbs*
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "Use  herbs"
+            emphasis: true
+      metadata: {}
+
+
+  testNoteCooklangMarkersAreText:
+    source: |
+      > Add @salt{1%tsp} to the #pot
+    result:
+      steps: []
+      notes:
+        -
+          - type: text
+            value: "Add @salt{1%tsp} to the #pot"
+      metadata: {}
+
+
+  testStepIsNotFormatted:
+    source: |
+      Mix *well* and see [this](https://example.com).
+    result:
+      steps:
+        -
+          - type: text
+            value: "Mix *well* and see [this](https://example.com)."
       metadata: {}
 
 

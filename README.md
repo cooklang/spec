@@ -132,6 +132,31 @@ To include relevant background, insights, or personal anecdotes that aren't part
 Mash @potato{2%kg} until smooth -- alternatively, boil 'em first, then mash 'em, then stick 'em in a stew.
 ```
 
+Consecutive `>` lines make one note, and the lines are joined into one paragraph.
+
+A note can use three kinds of Markdown formatting:
+
+| You write | It means |
+| --- | --- |
+| `*text*` or `_text_` | emphasis, usually shown in italics |
+| `**text**` or `__text__` | strong emphasis, usually shown in bold |
+| `[text](destination)` | a link with the given text |
+
+```cooklang
+> **Make ahead:** the dough keeps *up to 3 days* in the fridge.
+> See the [shaping guide](https://example.com/shaping) before you start.
+
+> This filling also works in [Spinach pie](<./Spinach pie.cook>).
+```
+
+They follow the rules of [CommonMark 0.31.2](https://spec.commonmark.org/0.31.2/) for [emphasis](https://spec.commonmark.org/0.31.2/#emphasis-and-strong-emphasis) and [inline links](https://spec.commonmark.org/0.31.2/#links). A delimiter with nothing to pair with stays as written, so `*Use fine sea salt` and `* Day-old rice works best` keep their asterisk, and `_` inside a word (`tomato_sauce_v2`) is text. Formatting can continue from one line of the note to the next, but not into another note. A destination with spaces goes between `<` and `>`, and a title after the destination is ignored. Everything else from Markdown (lists, headings, code, images, HTML) is plain text, as are `@`, `#` and `~` inside a note. Formatting is read in notes only: steps, metadata, section names and the notes of ingredients and cookware are unchanged.
+
+A backslash makes the next character plain text: `2\*250 g`, `\_name\_`, `\[1\]`. Comments are removed before formatting is read, so a `--` inside a destination needs escaping too (`https://example.com/a\--b`).
+
+A parsed note is a list of text runs. Each run has a `value` and, when it applies, `strong`, `emphasis` and `link` (the destination, as written). Joining the `value` of every run gives the note's plain text, for places where formatting can't be shown, such as speech, search and notifications.
+
+A destination is untrusted input. Applications open `http:`, `https:` and `mailto:` destinations outside the recipe, and resolve a destination without a scheme (that doesn't start with `//`) like a [recipe reference](#referencing-other-recipes), opening that recipe if it is in the recipe collection. They don't follow a path that leads outside the collection, and show the text of any other link (`javascript:`, `data:`, `file:`, `//example.com`, an empty destination, or a path that doesn't resolve) as plain text. See [proposal 0022](proposals/0022-note-formatting.md) for the details.
+
 ### Sections
 Some recipes are more complex than others and may include components that need to be prepared separately. In such cases, you can use the section syntax, e.g., `==Dough==`. The section name and the `=` symbols after it are optional, and the number of `=` symbols does not matter.
 

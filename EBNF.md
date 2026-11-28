@@ -11,7 +11,19 @@ metadata = ">", ">", { text item - ":" }-, ":", { text item }-, new line charact
 step     = { text item | ingredient | cookware | timer }-, new line character, blank line ;
 
 note marker = ">" ;
-note = { note marker, { text item }, blank line }-, blank line ;
+note        = { note marker, note text, blank line }-, blank line ;
+
+(* inline formatting in notes; which delimiters open and close emphasis, and
+   how they pair, follows CommonMark 0.31.2 and can't be expressed here *)
+note text   = { strong | emphasis | link | escape | text item } ;
+strong      = ( "**", note text, "**" ) | ( "__", note text, "__" ) ;
+emphasis    = ( "*", note text, "*" )   | ( "_", note text, "_" ) ;
+link        = "[", note text, "]", "(", destination, [ white space, title ], ")" ;
+destination = ( "<", { text item - "<" - ">" }, ">" ) | { text item - white space }- ;
+title       = ( '"', { text item - '"' }, '"' )
+            | ( "'", { text item - "'" }, "'" )
+            | ( "(", { text item - ")" }, ")" ) ;
+escape      = "\", text item ;
 
 ingredient           = one word ingredient | multiword ingredient ;
 one word ingredient  = "@", [ optional marker ], one word component ;
