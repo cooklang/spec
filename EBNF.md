@@ -34,8 +34,23 @@ one word component   = word,                     [ "{", [ amount ], "}" ] ;
 multiword component  = word, { text item - "{" }-, "{", [ amount ], "}" ;
 
 amount   = quantity | ( quantity, "%", units ) ;
-quantity = { text item - "%" - "}" }- ;
 units    = { text item - "}" }- ;
+
+(* tried in order against the whole quantity, surrounding white space trimmed:
+   a quantity that matches range is a range, else one that matches number is
+   a number, else it is text *)
+quantity = range | number | { text item - "%" - "}" }- ;
+range    = number, { white space }, range separator, { white space }, number ;
+
+range separator = "-" | "–" | "—" ;  (* U+002D hyphen-minus, U+2013 en dash, U+2014 em dash *)
+
+number         = decimal | mixed number | fraction | integer ;
+integer        = "0" | non-zero digit, { digit } ;
+decimal        = [ integer ], ".", digit, { digit } ;
+fraction       = integer, { white space }, "/", { white space }, integer ;
+mixed number   = integer, { white space }-, fraction ;
+digit          = "0" | non-zero digit ;
+non-zero digit = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 
 word      = { text item - white space - punctuation character }- ;
 text item = ? any character except new line character ? ;

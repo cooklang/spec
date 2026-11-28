@@ -27,6 +27,14 @@ Key components:
     * `ingredient` has `name`, `quantity` and `units`, and `optional: true` when marked with `?` (`optional` defaults to `false` and is omitted when false).
     * `cookware` has `name` and `quantity`, and `optional` like ingredients.
     * `timer` has `name`, `quantity` and `units`.
+
+    A `quantity` is a number (`2`, `0.5`), a string for a text quantity (`"a pinch"`), or, for a [range](../README.md#ranges), a mapping with `start` and `end`:
+
+    ```yaml
+    quantity:
+      start: 2
+      end: 3
+    ```
 5. Metadata is in key/value form.
 
 Example usage in https://github.com/cooklang/CookInSwift.
