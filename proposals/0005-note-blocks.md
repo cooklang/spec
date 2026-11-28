@@ -10,9 +10,12 @@ This proposal outlines a plan to add a new block type to the Cooklang language: 
 
 This feature will allow recipe authors to embed standalone notes in their recipes,
 giving them a way to store relevant background, insights, or personal anecdotes
-that aren't part of the cooking steps. Notes won’t be displayed during cooking mode,
-but they will appear in the recipe details view, providing context without cluttering
-the active instructions.
+that aren't part of the cooking steps. Notes appear in the recipe details view,
+providing context without cluttering the active instructions. Applications decide
+whether to show them in cooking mode too.
+
+*Amended 2026-11-28: notes were first kept out of cooking mode. CookCLI and the
+mobile apps show them there, so the choice is left to each application.*
 
 Discussion thread: ["Additional notes" section which isn't a step, but extra information about a recipe](https://github.com/cooklang/spec/discussions/81)
 and [Description, notes, and metadata...](https://github.com/cooklang/spec/discussions/46).

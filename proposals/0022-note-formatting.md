@@ -236,7 +236,7 @@ Once accepted, the three constructs and the backslash escape are documented in t
 
 1. Show `strong` runs in a heavier weight and `emphasis` runs in italics, relative to however the application styles notes. If notes are already set in italics, emphasis should still be distinguishable, for example by switching back to upright text.
 2. Show consecutive runs with the same `link` as one link.
-3. Notes stay out of cooking mode, as defined in [0005](0005-note-blocks.md).
+3. Applications decide whether to show notes in cooking mode ([0005](0005-note-blocks.md)). A note shown there keeps its formatting and links.
 4. Where formatting cannot be shown (speech, search indexes, plain-text export, notifications), use the plain text of the note.
 
 ### Opening links
