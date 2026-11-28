@@ -55,7 +55,7 @@ When you reference another recipe with `@./path/to/recipe{quantity}`, the quanti
 `servings` and `yield` are independent and can be set on the same recipe: `servings` says how many people it feeds, `yield` says how much it makes.
 
 ## Adding Pictures
-You can add images to your recipe by including a supported image file (`.png`,`.jpg`) matching the name of the recipe in the same directory.
+You can add images to your recipe by including a supported image file (`.jpg`, `.jpeg`, `.png`, `.webp` or `.heic`) matching the name of the recipe in the same directory.
 ```sh
 Baked Potato.cook
 Baked Potato.jpg
@@ -68,6 +68,24 @@ Chicken French.3.jpg
 ```
 
 Alternatively, you can set an image URL in the recipe metadata using the `image` key (see [Canonical metadata](#canonical-metadata)).
+
+### Folder pictures
+
+A folder can have a picture of its own: a file named `folder` with one of the picture extensions, inside that folder. Applications that show a folder as a card, row or tile may show this picture.
+```sh
+Desserts/
+  folder.jpg
+  Crêpes.cook
+  Crêpes.jpg
+```
+- The name and the extension match in any ASCII case, so `Folder.jpg` and `folder.JPG` count.
+- When a folder has more than one, the first in the order `jpg`, `jpeg`, `png`, `webp`, `heic` is its picture. An application that cannot draw a format skips it and takes the next one.
+- The picture changes nothing else about the folder: its name, sort order and contents stay as they are. A folder without one is shown as it is today; applications are not asked to borrow a recipe's picture instead.
+- Next to a recipe called `folder`, `folder.jpg` is both that recipe's title picture and the folder's picture. `folder.1.jpg` is a step picture of `folder.cook`, never a folder picture.
+- At the top of a collection, the same file is the collection's picture, for applications that show a collection as a whole. Showing it is optional.
+- A file whose name starts with `.` (`.folder.jpg`) is never a folder picture. A hidden attribute set by the operating system does not matter.
+- There is no metadata key for a folder picture.
+- Tools that copy a collection (sync, static site builds, export, import of an archive) keep `folder.*` like any other picture. Tools that report pictures matching no recipe do not report it.
 
 ## Canonical metadata
 
