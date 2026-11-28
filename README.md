@@ -124,7 +124,7 @@ Beyond the core language, the Cooklang ecosystem has common conventions for file
 ## Advanced
 
 ### Notes
-To include relevant background, insights, or personal anecdotes that aren't part of the cooking steps, use notes. Start a new line with `>` and add your story.
+To include relevant background, insights, or personal anecdotes that aren't part of the cooking steps, use notes. Start a new line with `>` and add your story. Applications decide whether to show notes in cooking mode, and how.
 
 ```cooklang
 > Don't burn the roux!
