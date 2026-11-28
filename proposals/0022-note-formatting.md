@@ -2,7 +2,7 @@
 
 * Proposal: [0022-note-formatting](0022-note-formatting.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Awaiting review**
+* Status: **Accepted, in implementation**
 
 ## Introduction
 
