@@ -2,7 +2,7 @@
 
 * Proposal: [0011-ranges](0011-ranges.md)
 * Authors: [Alexey Dubovskoy](https://github.com/dubadub)
-* Status: **Awaiting review**
+* Status: **Accepted, in implementation**
 
 ## Introduction
 

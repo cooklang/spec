@@ -16,6 +16,7 @@
    * [Short-hand preparations](#short-hand-preparations)
    * [Referencing other recipes](#referencing-other-recipes)
    * [Optional ingredients and cookware](#optional-ingredients-and-cookware)
+   * [Ranges](#ranges)
 * [Projects Which Use Cooklang](#projects-which-use-cooklang)
 * [Syntax Highlighting](#syntax-highlighting)
 
@@ -185,6 +186,24 @@ Top with extra @?parmesan{50%g} before serving.
 This recipe needs `parmesan 100 g`, plus `parmesan 50 g` marked as optional. Optional components scale exactly like required ones.
 
 Applications should mark optional items wherever ingredients and cookware are listed, leave optional ingredients off a shopping list unless the user chooses them (see [shopping lists](conventions.md#optional-ingredients)), and not count a missing optional ingredient as missing when matching recipes against a pantry. An optional recipe reference makes every ingredient of the referenced recipe optional.
+
+### Ranges
+
+When a recipe isn't exact, give a range: two numbers joined by a dash.
+
+```cooklang
+Crush @garlic{2-3%cloves} and fry in @olive oil{1-2%tbsp} for ~{2-3%minutes}.
+
+Add @chilli flakes{1/2-1%tsp} and simmer for ~{25-30%minutes}.
+```
+
+A range is a number, not text, so it can be scaled, added up and converted like any other quantity. Both ends must be numbers (whole numbers, decimals, fractions or mixed numbers like `1 1/2`), and the unit after `%` applies to both. Spaces around the dash are allowed, so `{2 - 3}` is the same as `{2-3}`, and so are the en dash and em dash (`{2–3}`, `{2—3}`), which phones and word processors often type in place of `-`. Anything else stays text, as before: `{2-}`, `{1-2-3}`, `{2-few}` and `{1-2 handfuls}` are text quantities.
+
+The ends are kept as written: `{3-2}` starts at 3 and ends at 2 (parsers may warn about it), and `{2-2}` stays a range.
+
+A range scales by multiplying both ends, so for twice the servings `@garlic{2-3%cloves}` becomes 4–6 cloves. A locked quantity such as `@salt{=1-2%tsp}` doesn't scale at all. When the same ingredient appears more than once, ranges add end to end and a plain number adds to both ends: `@garlic{2}` and `@garlic{1-2}` need 3–4 garlic. Amounts in different units are listed separately, as for any quantity.
+
+Applications should show a range with its unit once (`2–3 cloves`, `½–1 tsp`), and write it back with a plain `-` and no spaces. When a range is converted to another unit, the unit is picked for the lower end and the upper end is converted to the same unit. A countdown for a timer range starts at the lower end, so the cook checks early and keeps going if needed. See [conventions](conventions.md) for ranges in shopping lists and pantry matching.
 
 ## Projects Which Use Cooklang
 * [Cooklang playground](https://cooklang.github.io/cooklang-rs/)

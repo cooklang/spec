@@ -1,4 +1,4 @@
-version: 8
+version: 9
 tests:
   testBasicDirection:
     source: |
@@ -943,6 +943,165 @@ tests:
             units: ""
           - type: text
             value: "?"
+      metadata: {}
+
+
+  testIngredientRange:
+    source: |
+      @garlic{2-3%cloves}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "garlic"
+            quantity:
+              start: 2
+              end: 3
+            units: "cloves"
+      metadata: {}
+
+
+  testIngredientRangeFraction:
+    source: |
+      @chilli flakes{1/2-1%tsp}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "chilli flakes"
+            quantity:
+              start: 0.5
+              end: 1
+            units: "tsp"
+      metadata: {}
+
+
+  testIngredientRangeDecimal:
+    source: |
+      @cream{1.5-2.25%cups}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "cream"
+            quantity:
+              start: 1.5
+              end: 2.25
+            units: "cups"
+      metadata: {}
+
+
+  testIngredientRangeMixedNumber:
+    source: |
+      @flour{1 1/2-2%cups}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "flour"
+            quantity:
+              start: 1.5
+              end: 2
+            units: "cups"
+      metadata: {}
+
+
+  testIngredientRangeWithSpaces:
+    source: |
+      @eggs{2 - 3}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "eggs"
+            quantity:
+              start: 2
+              end: 3
+            units: ""
+      metadata: {}
+
+
+  testTimerRange:
+    source: |
+      Bake for ~{25-30%minutes}
+    result:
+      steps:
+        -
+          - type: text
+            value: "Bake for "
+          - type: timer
+            quantity:
+              start: 25
+              end: 30
+            units: "minutes"
+            name: ""
+      metadata: {}
+
+
+  testRangeOpenEndedIsText:
+    source: |
+      @eggs{2-}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "eggs"
+            quantity: "2-"
+            units: ""
+      metadata: {}
+
+
+  testRangeThreeNumbersIsText:
+    source: |
+      @eggs{1-2-3}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "eggs"
+            quantity: "1-2-3"
+            units: ""
+      metadata: {}
+
+
+  testIngredientRangeEnDash:
+    source: |
+      @eggs{2–3}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "eggs"
+            quantity:
+              start: 2
+              end: 3
+            units: ""
+      metadata: {}
+
+
+  testRangeLikeTextStaysText:
+    source: |
+      @water{1-2 handfuls}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "water"
+            quantity: "1-2 handfuls"
+            units: ""
+      metadata: {}
+
+
+  testDecimalWithoutLeadingZero:
+    source: |
+      @milk{.5%cup}
+    result:
+      steps:
+        -
+          - type: ingredient
+            name: "milk"
+            quantity: 0.5
+            units: "cup"
       metadata: {}
 
 

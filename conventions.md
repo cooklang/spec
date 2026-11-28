@@ -122,6 +122,8 @@ salt
 -- remember to check the pantry
 ```
 
+Quantities on free-hand items and [selection lines](#optional-ingredients) are read like recipe quantities, so `olive oil{1-2%tbsp}` and `? chilli flakes{1-2%pinch}` are [ranges](README.md#ranges). Totals follow the same rules as in a recipe: ranges add end to end and a plain number adds to both ends, so a list can show `garlic 5–7 cloves`. Serializers write a range as `start-end` with a plain `-` and no spaces (`{1-2%tbsp}`), even if it was read with an en or em dash.
+
 #### Optional ingredients
 
 A recipe reference on its own contributes only the **required** ingredients of that recipe. [Optional ingredients](README.md#optional-ingredients-and-cookware) are opt-in: each one the user accepted is recorded as a **selection line** beneath its recipe reference — `?`, a single space, and the ingredient with the amount to buy:
@@ -260,6 +262,8 @@ Applications can use this data to check ingredient availability, track expiratio
 
 When matching recipes against the pantry ("what can I cook?"), a missing [optional ingredient](README.md#optional-ingredients-and-cookware) does not count as missing: a recipe whose only absent ingredients are optional is a full match.
 
+A [range](README.md#ranges) is compared against its **upper** end, so a recipe that needs `@garlic{2-3%cloves}` is fully covered only by 3 or more cloves, and the cook never runs short. Applications may show the recipe as partially covered when the stock falls between the two ends.
+
 ## Scaling and Servings
 
 Cooklang supports automatic recipe scaling based on servings. This allows users to adjust recipes for different numbers of people.
@@ -296,10 +300,19 @@ Season with @salt{=1%tsp} to taste.
 
 This keeps salt at 1 tsp regardless of serving size.
 
+#### Ranges
+A [range](README.md#ranges) scales by multiplying both ends:
+
+```cooklang
+Crush @garlic{2-3%cloves} and season with @salt{=1-2%tsp}.
+```
+
+When scaling from 2 to 4 servings, the garlic becomes 4–6 cloves. The `=` lock applies to the whole range, so the salt stays 1–2 tsp. Applications that round scaled quantities to friendly fractions round each end.
+
 ### What Doesn't Scale
 
 - **Timers**: Cooking times typically remain the same regardless of portion size
-- **Cookware**: Pan and pot sizes don't automatically adjust
+- **Cookware**: Pan and pot sizes don't automatically adjust; a cookware range such as `#ramekins{4-6}` is only displayed and added up
 
 ### Example
 
